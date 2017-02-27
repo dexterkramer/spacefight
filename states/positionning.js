@@ -4,26 +4,53 @@ var positionning = function(game){
 positionning.prototype = {
   	create: function(){
         drawCases(this.game);
-        this.game.player1.blocked = false;
-        positioningPlayer(this.game.player1);
+        console.log(this.game.players);
+        this.game.turn.player = this.game.players[0];
+        positioningTurnInit(this.game.turn.player);
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
-        /*button.onInputOver.add(over, this);
-        button.onInputOut.add(out, this);
-        button.onInputUp.add(up, this);*/
       },
     update : function(){
-        if(!this.game.player1.blocked)
-        {
-            checkOverLap(this.game.player1, this.game.caseTable.slice(Math.round(this.game.caseTable.length / 2), this.game.caseTable.length));
-        }
+        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning);
     }
+}
+
+function positioningTurnInit(player)
+{
+    positioningPlayer(player);
+}
+
+function nextPlayer()
+{
+    if(typeof this.game.players[this.game.turn.player.number + 1] !== "undefined" && this.game.players[this.game.turn.player.number + 1] !== null)
+    {
+        return this.game.players[this.game.turn.player.number + 1];
+    }
+    return null;
+}
+
+function finish()
+{
+    
+}
+
+function disableDragingFroPlayer(player)
+{
+    player.fleat.escouades.forEach(function(escouade){
+        escouade.phaserObject.input.disableDrag();
+    });
 }
 
 function actionOnClick()
 {
-    if(okToFinishPositioning(this.game.player1))
+    if(okToFinishPositioning(this.game.turn.player))
     {
-
+        disableDragingFroPlayer(this.game.turn.player); 
+        var nextPlayer = nextPlayer();
+        if(nextPlayer !== null)
+        {
+            this.game.turn.player = nextPlayer;
+            positioningTurnInit(this.game.turn.player);
+        }
     }
 }
 
@@ -130,66 +157,67 @@ function dragEscouade(sprite, pointer)
     sprite.ref.isDragged = true;
 }
 
+function stopDragPlayer(sprite)
+{
+    // has the escouade been dragged on a case ?
+    if(sprite.ref.overlapedCase !== null)
+    {
+        NotOverLaped(sprite.ref.overlapedCase);
+        // does the case already coutain an escouade ?
+        if(sprite.ref.overlapedCase.escouade == null)
+        {
+            // if the escouade is alreay on another case, remove it from the case.
+            if(sprite.ref.case !== null)
+            {
+                sprite.ref.case.escouade = null;
+            }
+
+            //linking the escouade to the new case.
+            sprite.ref.case = sprite.ref.overlapedCase;
+            sprite.ref.overlapedCase.escouade = sprite.ref;
+
+            // move the sprite of the esouade to his new position 
+            sprite.x = sprite.ref.overlapedCase.phaserObject.x;
+            sprite.y = sprite.ref.overlapedCase.phaserObject.y;
+        }
+        else
+        {
+            // go here if the escouade is moved to a case already countaining a fleet.
+            // if the esouade had already a case : get back to the previous case.
+            if(sprite.ref.case !== null)
+            {
+                sprite.x = sprite.ref.case.phaserObject.x;
+                sprite.y = sprite.ref.case.phaserObject.y;
+            }
+            else
+            {
+                // else if the escouade is not linked to a case : return to the original position.
+                sprite.x = sprite.ref.originalX;
+                sprite.y = sprite.ref.originalY;
+            }
+        }
+    }
+    else
+    {
+        // go here if the escouade is not dragged on a case.
+        // if the escouade add a case previously : remove it.
+        if(sprite.ref.case !== null)
+        {
+            sprite.ref.case.escouade = null;
+            sprite.ref.case = null;
+        }
+
+        // set the escouade to the original position.
+        sprite.x = sprite.ref.originalX;
+        sprite.y = sprite.ref.originalY;
+    }
+}
+
 function stopDragEscouade(sprite, pointer)
 {
     sprite.body.moves = false;
     sprite.ref.isDragged = false;
-    if(!this.game.player1.blocked)
-    {
-        // has the escouade been dragged on a case ?
-        if(sprite.ref.overlapedCase !== null)
-        {
-
-            NotOverLaped(sprite.ref.overlapedCase);
-            // does the case already coutain an escouade ?
-            if(sprite.ref.overlapedCase.escouade == null)
-            {
-                // if the escouade is alreay on another case, remove it from the case.
-                if(sprite.ref.case !== null)
-                {
-                    sprite.ref.case.escouade = null;
-                }
-
-                //linking the escouade to the new case.
-                sprite.ref.case = sprite.ref.overlapedCase;
-                sprite.ref.overlapedCase.escouade = sprite.ref;
-
-                // move the sprite of the esouade to his new position 
-                sprite.x = sprite.ref.overlapedCase.phaserObject.x;
-                sprite.y = sprite.ref.overlapedCase.phaserObject.y;
-            }
-            else
-            {
-                // go here if the escouade is moved to a case already countaining a fleet.
-                // if the esouade had already a case : get back to the previous case.
-                if(sprite.ref.case !== null)
-                {
-                    sprite.x = sprite.ref.case.phaserObject.x;
-                    sprite.y = sprite.ref.case.phaserObject.y;
-                }
-                else
-                {
-                    // else if the escouade is not linked to a case : return to the original position.
-                    sprite.x = sprite.ref.originalX;
-                    sprite.y = sprite.ref.originalY;
-                }
-            }
-        }
-        else
-        {
-            // go here if the escouade is not dragged on a case.
-            // if the escouade add a case previously : remove it.
-            if(sprite.ref.case !== null)
-            {
-                sprite.ref.case.escouade = null;
-                sprite.ref.case = null;
-            }
-
-            // set the escouade to the original position.
-            sprite.x = sprite.ref.originalX;
-            sprite.y = sprite.ref.originalY;
-        }
-    }
+    stopDragPlayer(sprite);
 }
 
 function drawCases(game)

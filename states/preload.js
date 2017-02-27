@@ -14,17 +14,31 @@ preload.prototype = {
         
 	},
   	create: function(){
+        this.game.players = [];
         this.game.caseTable = createCases(this.game.cache.getJSON('casemap'));
-        this.game.player1 = createPlayer(this.game.cache.getJSON('player1'));
-        this.game.player2 = createPlayer(this.game.cache.getJSON('player2'));
+        this.game.players.push(createPlayer(this.game.cache.getJSON('player1'), 0, this.game.caseTable.slice(Math.round(this.game.caseTable.length / 2), this.game.caseTable.length)));
+        this.game.players.push(createPlayer(this.game.cache.getJSON('player2'), 1, this.game.caseTable.slice(0 , Math.round(this.game.caseTable.length / 2))));
         this.game.state.start("Positionning");
+        this.game.turn = new oneTurn();
 	}
+}
+
+var oneTurn = function()
+{
+    this.player = null;
 }
 
 function clearGameCache (game) {
     game.cache = new Phaser.Cache(game);
     game.load.reset();
     game.load.removeAll();
+}
+
+var onePlayer = function(name, number)
+{
+    this.name = name;
+    this.number = number;
+    this.availableCasePositioning = null;
 }
 
 var oneEscouade = function(name, fleat)
@@ -65,11 +79,13 @@ oneFleat.prototype = {
     }
 };
 
-var onePlayer = function(name)
+var onePlayer = function(name, number, availableCasePositioning)
 {
     this.name = name;
     this.fleat = null;
     this.blocked = true;
+    this.number = number;
+    this.availableCasePositioning = availableCasePositioning;
 };
 
 function createFleat(player, fleatJson)
@@ -90,9 +106,9 @@ function createEscouade(fleat, escouadeJson)
     return escouade;
 }
 
-function createPlayer(playerJson)
+function createPlayer(playerJson, number, availableCasePositioning)
 {
-    var player = new onePlayer(playerJson.name);
+    var player = new onePlayer(playerJson.name, number, availableCasePositioning);
     player.fleat = createFleat(player, playerJson.fleat );
     return player;
 }
