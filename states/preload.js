@@ -178,12 +178,14 @@ function createCases (casemap)
         caseTable[elem.number] = newCase;
     });
 
-    caseTable.forEach(function(elem){
-        elem.left = caseTable[(((elem.number % caseByLine) == 1) ? null : elem.number - 1)]; 
-        elem.right = caseTable[(((elem.number % caseByLine) == 0) ? null : elem.number + 1)]; 
-        elem.top = caseTable[((elem.number <= caseByLine) ? null : elem.number - caseByLine)]; 
-        elem.bottom = caseTable[((elem.number > ((caseByLine * lines) - caseByLine)) ? null : elem.number + caseByLine)]; 
+    casemap.forEach(function(elem){
+        caseTable[elem.number].left = caseTable[elem.links.left];
+        caseTable[elem.number].right = caseTable[elem.links.right];
+        caseTable[elem.number].top = caseTable[elem.links.top];
+        caseTable[elem.number].bottom = caseTable[elem.links.bottom];
     });
+
+    console.log(caseTable);
 
     caseTable.forEach(function(elem){
         findCasePosition(elem);
