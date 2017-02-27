@@ -45,11 +45,15 @@ function actionOnClick()
     if(okToFinishPositioning(this.game.turn.player))
     {
         disableDragingFroPlayer(this.game.turn.player); 
-        var nextPlayer = nextPlayer();
-        if(nextPlayer !== null)
+        var newPlayer = nextPlayer();
+        if(newPlayer !== null)
         {
-            this.game.turn.player = nextPlayer;
+            this.game.turn.player = newPlayer;
             positioningTurnInit(this.game.turn.player);
+        }
+        else
+        {
+            finish();
         }
     }
 }
