@@ -1,0 +1,52 @@
+{
+    "name" : "toto",
+    "fleat" : {
+        "name" : "maSuperFlote",
+        "escouades" : [
+            {
+                "name" : "escouade1",
+                "ships" : [
+                    {
+                        "name" : "gros",
+                        "firePower" : 50,
+                        "shield" : 100,
+                        "armor" : 400
+                    }
+                ]
+            },
+            {
+                "name" : "escouade2",
+                "ships" : [
+                    {
+                        "name" : "gros",
+                        "firePower" : 50,
+                        "shield" : 100,
+                        "armor" : 400
+                    }
+                ]
+            },
+            {
+                "name" : "escouade3",
+                "ships" : [
+                    {
+                        "name" : "gros",
+                        "firePower" : 50,
+                        "shield" : 100,
+                        "armor" : 400
+                    }
+                ]
+            },
+            {
+                "name" : "escouade4",
+                "ships" : [
+                    {
+                        "name" : "gros",
+                        "firePower" : 50,
+                        "shield" : 100,
+                        "armor" : 400
+                    }
+                ]
+            }
+        ] 
+    }
+}
