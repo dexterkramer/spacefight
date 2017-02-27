@@ -3,6 +3,8 @@ var TheGame = function(game){
   
 TheGame.prototype = {
   	create: function(){
+        drawCases(this.game);
+        drawAllSquads();
           /*
         drawCases(this.game);
         this.game.turn.player = this.game.players[0];

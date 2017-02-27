@@ -185,8 +185,6 @@ function createCases (casemap)
         caseTable[elem.number].bottom = caseTable[elem.links.bottom];
     });
 
-    console.log(caseTable);
-
     caseTable.forEach(function(elem){
         findCasePosition(elem);
     });
