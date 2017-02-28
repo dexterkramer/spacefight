@@ -38,7 +38,10 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
             }
             else
             {
-                OverLaped(squad.overlapedCase);
+                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
+                {  
+                    OverLaped(squad.overlapedCase);
+                }
             }
         }
     }
@@ -117,7 +120,7 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                attack(sprite);
+                attack(sprite, sprite.ref.overlapedCase.squad);
             }
         }
     }
@@ -141,7 +144,7 @@ function support(sprite)
     console.log('support');
 }
 
-function attack(sprite)
+function attack(sprite, target)
 {
     // go here if the squad is moved to a case already countaining a fleet.
     // if the esouade had already a case : get back to the previous case.
@@ -151,6 +154,20 @@ function attack(sprite)
         sprite.y = sprite.ref.case.phaserObject.y;
     }
     console.log('attack');
+    drawAttack(sprite.ref, target);
+}
+
+function drawAttack(squad, squad2)
+{
+    /*
+    var distance = Phaser.Math.distance(squad.phaserObject.x, squad.phaserObject.y, squad2.phaserObject.x, squad2.phaserObject.y );
+    var angle = game.physics.arcade.angleBetween(squad.phaserObject, squad2.phaserObject);
+    var arrow = this.game.add.sprite(squad.phaserObject.x  , squad.phaserObject.y  , 'red-arrow');
+    arrow.scale.setTo(distance / arrow.width,  100 /  arrow.height);
+    arrow.pivot.x = arrow.width * .5;arrow.pivot.y = arrow.height * .5;
+    arrow.rotation = angle;
+    arrow.x = arrow.x + ((arrow.width)  * (Math.cos(angle)/ Math.sin(angle))); 
+    arrow.y = arrow.y + ((arrow.height)  * (Math.cos(angle)/ Math.sin(angle)));*/
 }
 
 function applyMove(sprite)

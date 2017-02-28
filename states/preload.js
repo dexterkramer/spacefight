@@ -14,6 +14,7 @@ preload.prototype = {
         game.load.spritesheet('button', 'assets/nextButton.PNG', 125, 55);
         game.load.image('space', 'assets/deep-space.jpg');
         game.load.image('attackOverLaped', 'assets/attackOverLaped.png');
+        game.load.image('red-arrow', 'assets/red-arrow.png');
         
         
 	},
@@ -60,16 +61,44 @@ var oneSquad = function(name, fleat)
     this.tempAction = null;
 };
 
+var lifeBar = function(armor, shield)
+{
+    this.armor = armor;
+    this.shield = shield;
+    this.phaserObject = null;
+    this.textObject = null;
+}
+
 oneSquad.prototype = {
     addShip : function(ship)
     {
         this.ships.push(ship);
+    },
+    createLifeBar : function()
+    {
+        var totalArmor = 0;
+        var totalShield = 0;
+        this.ships.forEach(function(ship){
+            totalArmor += ship.lifeBar.armor;
+            totalShield += ship.lifeBar.shield;
+        });
+        this.lifeBar = new lifeBar(totalArmor, totalShield);
     }
 };
+
+
 
 var ship = function(infos)
 {
     this.infos = infos;
+    this.createLifeBar();
+};
+
+ship.prototype = {
+    createLifeBar : function()
+    {
+        this.lifeBar = new lifeBar(this.infos.armor, this.infos.shield);
+    }
 };
 
 var oneFleat = function(name, player)
@@ -109,8 +138,9 @@ function createSquad(fleat, squadJson)
 {
     var squad = new oneSquad(squadJson.name, fleat);
     squadJson.ships.forEach(function(shipJson){
-        squad.addShip(shipJson);
+        squad.addShip(new ship(shipJson));
     });
+    squad.createLifeBar();
     return squad;
 }
 

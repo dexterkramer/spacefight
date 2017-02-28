@@ -1,14 +1,14 @@
 
 Escouardes : 
 
- - La flotte est divisable en 4 squads maximum (minimum : 1).
+ - La flotte est divisable en 4 éscouades maximum (minimum : 1).
 
 
 D�placement : 
 
- - Une squad peut se d�placer d'une case par tour.
- - Une squad peut effecture une nouvelle action par tour.
- - L'squad la plus rapide de la bataille peux se d�placer de deux cases / en contrepartie, l'squad la plus rapide de l'adversaire peut commencer en mode 
+ - Une éscouade peut se d�placer d'une case par tour.
+ - Une éscouade peut effecture une nouvelle action par tour.
+ - L'éscouade la plus rapide de la bataille peux se d�placer de deux cases / en contrepartie, l'éscouade la plus rapide de l'adversaire peut commencer en mode 
    fortifier (-X% dmg).
  - Le mode fortifier est bris� des que la flotte se d�place.
 
@@ -59,8 +59,8 @@ Combat :
      La flotte A est divis� en groupe de 5 vaisseaux al�atoirement (modifiable par ordre : groupe de 1,2,3,4,5), chacun de ces groups va viser 1 vaisseaux actifs 
      al�atoire de la flotte B jusqua sa destruction pour passer � un autre. 
      Idem cot� flotte B.
-     Si un vaisseaux n'a plus de moral, il part en d�route et n'est plus actif dans la bataille et son niveaux de moral est retirer au global de l'squad, 
-     il afaiblit aussi le moral des autres vaisseaux de son squad.
+     Si un vaisseaux n'a plus de moral, il part en d�route et n'est plus actif dans la bataille et son niveaux de moral est retirer au global de l'éscouade, 
+     il afaiblit aussi le moral des autres vaisseaux de son éscouade.
 
 
 Replis : 

@@ -13,39 +13,6 @@
                         "armor" : 400
                     }
                 ]
-            },
-            {
-                "name" : "squad2",
-                "ships" : [
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "armor" : 400
-                    }
-                ]
-            },
-            {
-                "name" : "squad3",
-                "ships" : [
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "armor" : 400
-                    }
-                ]
-            },
-            {
-                "name" : "squad4",
-                "ships" : [
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "armor" : 400
-                    }
-                ]
             }
         ] 
     }
