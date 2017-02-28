@@ -3,8 +3,9 @@ var positionning = function(game){
   
 positionning.prototype = {
   	create: function(){
+        this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         drawCases(this.game);
-        nextPlayer();
+        nextPlayer(false);
         positioningTurnInit(this.game.turn.player);
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
       },
@@ -44,7 +45,7 @@ function actionOnClick()
     if(okToFinishPositioning(this.game.turn.player))
     {
         disableDragingFroPlayer(this.game.turn.player); 
-        nextPlayer();
+        nextPlayer(false);
         if(this.game.turn.player !== null)
         {
             positioningTurnInit(this.game.turn.player);

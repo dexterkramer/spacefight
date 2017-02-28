@@ -1,0 +1,79 @@
+
+Escouardes : 
+
+ - La flotte est divisable en 4 escouades maximum (minimum : 1).
+
+
+Déplacement : 
+
+ - Une escouade peut se déplacer d'une case par tour.
+ - Une escouade peut effecture une nouvelle action par tour.
+ - L'escouade la plus rapide de la bataille peux se déplacer de deux cases / en contrepartie, l'escouade la plus rapide de l'adversaire peut commencer en mode 
+   fortifier (-X% dmg).
+ - Le mode fortifier est brisé des que la flotte se déplace.
+
+
+Défendre : 
+ - Une flotte qui défend (sans être entrain de faire une autre action) prend un bonus de 10% de résistance au dégards.
+ - Une flotte A en défense peut attaquer une autre flotte B à proximité, si cette flotte B l'attaquait déja, elle va être considérer comme étant la flotte 
+   contre laquelle A défend (important pour les prises par le flanc). 
+
+Attaquer : 
+
+ - Une flotte peut attaquer une autre flotte si elle est a proximité d'une case.
+ - On ne découvre le nombre de vaisseaux d'une flotte adverse, qu'après l'avoir engagé une fois (attaque ou défense).
+ - Si deux flotte attaque une même flotte ennemis sur le même flanc : malus freidly fire, malus overdamage.
+ - Si deux floote attaque une même flotte sur deux flancs différents : Bonus prise par le flanc pour la deuxieme flotte (c'elle qui attaque en second). 
+   Malus moral pour victime.
+ - Si une flotte attaque une flotte effecutant une autre tache : Bonus désorganisation : réduis l'éfficacité de la tache effectué de X%, bonus de dégards +X%.
+
+
+Soutiens (pas sûr): 
+
+ - Soutenir une flotte permet de la réparer (tres léger). 
+ - Soutenir une flotte permet de luis transférer de l'energie a chaque tour.
+ - Soutenir une flotte améliore le moral.
+ - Soutenir une flotte augment la vitesse de régénération des boucliers.
+ - Soutenir une flotte qui attaque augment ses dmg, son moral et son énergie.
+
+
+Ordres (cartes) : 
+
+ - Les joueurs tire un ordre par tour, jusqu'a une reserve de 10 ordres.
+ - Les joueurs peuvent utiliser autant d'ordre qu'ils veulent par tour.
+ - Futurs : les héros ont une chance de générer des ordres spéciaux a chaque tour quand il sont en combat.
+
+
+Combat :
+
+ - Les combat se déroule à la fin de chaque tour entre les flottes engagé de manière automatique.
+
+ - Chaque tour de combat entre 2 flottes se passes ainsi :
+   - Bataille de chasseur => chaque chasseur tire aléatoirement sur un chasseur ennemis.
+     les chasseur restant vont attaquer la flotte ennemis. Leur dégars est divisé par le nombre de vaisseaux adverse. dégard +X% sur bouclier.
+     la flaq (anti-aérien) ennemis affaiblis les chasseurs. la flaq ennemis fait du freindly fire. selon leur skill les chasseur peuvent désactiver certains équipements au hasard.
+
+   - Chaque vaisseaux de la flotte A envoie ses tir spéciaux sur un vaisseaux aléatoire (modifiable par ordre : viser les gros, viser full life) de la flotte B. 
+     Idem pour la flotte B.
+     Les effets des tirs spéciaux s'applique au prochains tour.
+     La flotte A est divisé en groupe de 5 vaisseaux aléatoirement (modifiable par ordre : groupe de 1,2,3,4,5), chacun de ces groups va viser 1 vaisseaux actifs 
+     aléatoire de la flotte B jusqua sa destruction pour passer à un autre. 
+     Idem coté flotte B.
+     Si un vaisseaux n'a plus de moral, il part en déroute et n'est plus actif dans la bataille et son niveaux de moral est retirer au global de l'escouade, 
+     il afaiblit aussi le moral des autres vaisseaux de son escouade.
+
+
+Replis : 
+
+ - Une flotte peut être replier par un joueur quand elle est attaquer, elle subira les dégards de la flotte adverse sans répliquer avant de changer de case.
+ - Une flotte peut être replier quand elle attaque, elle subira les dégards de la flotte adverse (60% => inciter à l'attaque) sans répliquer avant de changer de case. 
+ - Replis général, le joueur abandonne le combat, certains vaisseaux détruit peuvent être capturé si victoire (peu de chances). 
+
+Victoire / Défaite.
+
+ - Une flotte dont le moral tombe en dessous de 20 % de son maximum part en déroute recule d'une case dans la direction opposé de l'attaque. Si elle rencontre une flotte
+   dans la case ou elle devait se replier, elle lui fait des dégards et s'en prend et va dans la case suivante dans la même direction. Si la case est en dehors de la 
+   catre, elle est sortis de la partis, dans ce cas des vaisseaux détruit peuvent être capturé si victoire (peu de chances).  
+ - La/Les flotte victorieuse prend un boost de moral.
+ - Si une flotte se replie dans une case ou il y a une flotte ennemis, des vaisseaux peuvent être capturé si victoire (beaucoups de chances).
+

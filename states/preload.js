@@ -6,14 +6,19 @@ preload.prototype = {
         game.load.json('casemap', 'assets/cases.json');
         game.load.json('player1', 'assets/player1.json');
         game.load.json('player2', 'assets/player2.json');
-        game.load.image('escouade', 'assets/escouade.jpg');
-        game.load.image('case', 'assets/case.bmp');
-        game.load.image('overLapedCase', 'assets/overlapedCase.bmp');
-        game.load.image('badOverLapedCase', 'assets/badOverLapedCase.bmp');
+        game.load.image('escouade', 'assets/escouade.png');
+        game.load.image('case', 'assets/case2.png');
+        game.load.image('overLapedCase', 'assets/moveOveralped.png');
+        game.load.image('supportLapedCase', 'assets/overlapedSupportCase.png');
+        game.load.image('badOverLapedCase', 'assets/badOverLapedCase.png');
         game.load.spritesheet('button', 'assets/nextButton.PNG', 125, 55);
+        game.load.image('space', 'assets/deep-space.jpg');
+        game.load.image('attackOverLaped', 'assets/attackOverLaped.png');
+        
         
 	},
   	create: function(){
+        this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.players = [];
         this.game.caseTable = createCases(this.game.cache.getJSON('casemap'));
         this.game.players.push(createPlayer(this.game.cache.getJSON('player1'), 0, this.game.caseTable.slice(Math.round(this.game.caseTable.length / 2), this.game.caseTable.length)));
@@ -50,6 +55,9 @@ var oneEscouade = function(name, fleat)
     this.action = null;
     this.phaserObject = null;
     this.overlapedCase = null;
+    this.movesAllowed = 0;
+    this.movedFrom = null;
+    this.tempAction = null;
 };
 
 oneEscouade.prototype = {
@@ -179,10 +187,10 @@ function createCases (casemap)
     });
 
     casemap.forEach(function(elem){
-        caseTable[elem.number].left = caseTable[elem.links.left];
-        caseTable[elem.number].right = caseTable[elem.links.right];
-        caseTable[elem.number].top = caseTable[elem.links.top];
-        caseTable[elem.number].bottom = caseTable[elem.links.bottom];
+        caseTable[elem.number].left = (elem.links.left !== null) ? caseTable[elem.links.left] : null;
+        caseTable[elem.number].right = (elem.links.right !== null) ? caseTable[elem.links.right] : null;
+        caseTable[elem.number].top = (elem.links.top !== null) ? caseTable[elem.links.top] : null;
+        caseTable[elem.number].bottom = (elem.links.bottom !== null) ? caseTable[elem.links.bottom] : null;
     });
 
     caseTable.forEach(function(elem){

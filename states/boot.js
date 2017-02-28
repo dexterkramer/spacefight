@@ -4,7 +4,7 @@ var boot = function(game){
   
 boot.prototype = {
 	preload: function(){
-		        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+		this.game.physics.startSystem(Phaser.Physics.ARCADE);
           //this.game.load.image("loading","assets/loading.png"); 
 	},
   	create: function(){
