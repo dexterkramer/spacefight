@@ -153,6 +153,21 @@ function attack(sprite)
     console.log('attack');
 }
 
+function applyMove(sprite)
+{
+    if(sprite.ref.case !== null)
+    {
+        sprite.ref.case.escouade = null;
+    }
+    //linking the escouade to the new case.
+    sprite.ref.case = sprite.ref.overlapedCase;
+    sprite.ref.overlapedCase.escouade = sprite.ref;
+
+    // move the sprite of the esouade to his new position 
+    sprite.x = sprite.ref.overlapedCase.phaserObject.x;
+    sprite.y = sprite.ref.overlapedCase.phaserObject.y;
+}
+
 function move(sprite)
 {
     if(sprite.ref.movedFrom[sprite.ref.movedFrom.length - 1] == sprite.ref.overlapedCase)
@@ -163,30 +178,14 @@ function move(sprite)
         }
         sprite.ref.movesAllowed = sprite.ref.movesAllowed + 1;
         sprite.ref.movedFrom.pop();
-        
-        //linking the escouade to the new case.
-        sprite.ref.case = sprite.ref.overlapedCase;
-        sprite.ref.overlapedCase.escouade = sprite.ref;
-        
-        // move the sprite of the esouade to his new position 
-        sprite.x = sprite.ref.overlapedCase.phaserObject.x;
-        sprite.y = sprite.ref.overlapedCase.phaserObject.y;
+        applyMove(sprite);
     }
     else if (sprite.ref.movesAllowed > 0)
     {
-        if(sprite.ref.case !== null)
-        {
-            sprite.ref.case.escouade = null;
-        }
+        
         sprite.ref.movesAllowed--;
         sprite.ref.movedFrom.push(sprite.ref.case);
-        //linking the escouade to the new case.
-        sprite.ref.case = sprite.ref.overlapedCase;
-        sprite.ref.overlapedCase.escouade = sprite.ref;
-
-        // move the sprite of the esouade to his new position 
-        sprite.x = sprite.ref.overlapedCase.phaserObject.x;
-        sprite.y = sprite.ref.overlapedCase.phaserObject.y;
+        applyMove(sprite);
     }
     else
     {
@@ -196,7 +195,5 @@ function move(sprite)
             sprite.y = sprite.ref.case.phaserObject.y;
         }
     }
-
-
     console.log('move');
 }
