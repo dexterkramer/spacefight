@@ -9,7 +9,23 @@ positionning.prototype = {
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
       },
     update : function(){
-        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning);
+        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
+    }
+}
+
+function OverLapPositioningDraggingManagment(squad, oldOverLapped)
+{
+    if(typeof oldOverLapped !== "undefined" && oldOverLapped !== null && oldOverLapped !== squad.overlapedCase )
+    {
+        NotOverLaped(oldOverLapped);
+    }
+    if(squad.overlapedCase !== null && squad.overlapedCase.escouade !== null && squad.overlapedCase.escouade !== squad)
+    {
+        BadOverLaped(squad.overlapedCase);
+    }
+    else if(squad.overlapedCase !== null)
+    {
+        OverLaped(squad.overlapedCase); 
     }
 }
 
