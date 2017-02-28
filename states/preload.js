@@ -6,7 +6,7 @@ preload.prototype = {
         game.load.json('casemap', 'assets/cases.json');
         game.load.json('player1', 'assets/player1.json');
         game.load.json('player2', 'assets/player2.json');
-        game.load.image('escouade', 'assets/escouade.png');
+        game.load.image('squad', 'assets/squad.png');
         game.load.image('case', 'assets/case2.png');
         game.load.image('overLapedCase', 'assets/moveOveralped.png');
         game.load.image('supportLapedCase', 'assets/overlapedSupportCase.png');
@@ -46,7 +46,7 @@ var onePlayer = function(name, number)
     this.availableCasePositioning = null;
 }
 
-var oneEscouade = function(name, fleat)
+var oneSquad = function(name, fleat)
 {
     this.name = name;
     this.fleat = fleat;
@@ -60,7 +60,7 @@ var oneEscouade = function(name, fleat)
     this.tempAction = null;
 };
 
-oneEscouade.prototype = {
+oneSquad.prototype = {
     addShip : function(ship)
     {
         this.ships.push(ship);
@@ -75,15 +75,15 @@ var ship = function(infos)
 var oneFleat = function(name, player)
 {
     this.name = name;
-    this.escouades = [];
+    this.squads = [];
     this.player = player;
     player.fleat = this;
 };
 
 oneFleat.prototype = {
-    addEscouade : function(escouade)
+    addSquad : function(squad)
     {
-        this.escouades.push(escouade);
+        this.squads.push(squad);
     }
 };
 
@@ -99,19 +99,19 @@ var onePlayer = function(name, number, availableCasePositioning)
 function createFleat(player, fleatJson)
 {
     var fleat = new oneFleat(fleatJson.name, player);
-    fleatJson.escouades.forEach(function(escouadeJson){
-        fleat.addEscouade(createEscouade(fleat, escouadeJson));
+    fleatJson.squads.forEach(function(squadJson){
+        fleat.addSquad(createSquad(fleat, squadJson));
     });
     return fleat;
 }
 
-function createEscouade(fleat, escouadeJson)
+function createSquad(fleat, squadJson)
 {
-    var escouade = new oneEscouade(escouadeJson.name, fleat);
-    escouadeJson.ships.forEach(function(shipJson){
-        escouade.addShip(shipJson);
+    var squad = new oneSquad(squadJson.name, fleat);
+    squadJson.ships.forEach(function(shipJson){
+        squad.addShip(shipJson);
     });
-    return escouade;
+    return squad;
 }
 
 function createPlayer(playerJson, number, availableCasePositioning)
@@ -130,7 +130,7 @@ var oneCase = function(name,number,width,height){
     this.position.y = null;
     this.number = number;
     this.name = name;
-    this.escouade = null;
+    this.squad = null;
     this.left = null;
     this.right = null;
     this.top = null;

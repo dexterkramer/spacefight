@@ -25,13 +25,13 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
     {
         if(canGo(squad.overlapedCase, squad))
         {
-            if(squad.overlapedCase.escouade != null)
+            if(squad.overlapedCase.squad != null)
             {
-                if(squad.overlapedCase.escouade.fleat.player != squad.fleat.player )
+                if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
                 {
                     AttackOverLaped(squad.overlapedCase);
                 }
-                else if(squad.overlapedCase.escouade.fleat.player == squad.fleat.player )
+                else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
                 {
                     SupportOverLaped(squad.overlapedCase);
                 }
@@ -45,9 +45,9 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
 }
 
 
-function resetEscouadesActions(player)
+function resetSquadsActions(player)
 {
-    player.fleat.escouades.forEach(function(squad){
+    player.fleat.squads.forEach(function(squad){
         squad.movesAllowed = 1;
         squad.tempAction = null;
         squad.movedFrom = [];
@@ -63,8 +63,8 @@ function nextTurn()
     }
     this.game.turn.number++;
     nextPlayer();
-    resetEscouadesActions(this.game.turn.player);
-    enableDrag(this.game.turn.player, dragEscouade, stopDragEscouadeGaming);
+    resetSquadsActions(this.game.turn.player);
+    enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
 }
 
 function canGo(oneCase, squad)
@@ -95,27 +95,27 @@ function canGo(oneCase, squad)
 }
 
 
-function stopDragEscouadeGaming(sprite, pointer)
+function stopDragSquadGaming(sprite, pointer)
 {
     sprite.body.moves = false;
     sprite.ref.isDragged = false;
-    // has the escouade been dragged on a case ?
+    // has the squad been dragged on a case ?
     if(sprite.ref.overlapedCase !== null && canGo(sprite.ref.overlapedCase, sprite.ref))
     {
         NotOverLaped(sprite.ref.overlapedCase);
-        // does the case already coutain an escouade ?
-        if(sprite.ref.overlapedCase.escouade == null)
+        // does the case already coutain an squad ?
+        if(sprite.ref.overlapedCase.squad == null)
         {
-            // if the escouade is alreay on another case, remove it from the case.
+            // if the squad is alreay on another case, remove it from the case.
             move(sprite);
         }
         else
         {
-            if(sprite.ref.overlapedCase.escouade.fleat.player == sprite.ref.fleat.player)
+            if(sprite.ref.overlapedCase.squad.fleat.player == sprite.ref.fleat.player)
             {
                 support(sprite);
             }
-            if(sprite.ref.overlapedCase.escouade.fleat.player != sprite.ref.fleat.player)
+            if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
                 attack(sprite);
             }
@@ -123,7 +123,7 @@ function stopDragEscouadeGaming(sprite, pointer)
     }
     else
     {
-        // set the escouade to the original position.
+        // set the squad to the original position.
         sprite.x = sprite.ref.case.phaserObject.x;
         sprite.y = sprite.ref.case.phaserObject.y;
     }
@@ -131,7 +131,7 @@ function stopDragEscouadeGaming(sprite, pointer)
 
 function support(sprite)
 {
-    // go here if the escouade is moved to a case already countaining a fleet.
+    // go here if the squad is moved to a case already countaining a fleet.
     // if the esouade had already a case : get back to the previous case.
     if(sprite.ref.case !== null)
     {
@@ -143,7 +143,7 @@ function support(sprite)
 
 function attack(sprite)
 {
-    // go here if the escouade is moved to a case already countaining a fleet.
+    // go here if the squad is moved to a case already countaining a fleet.
     // if the esouade had already a case : get back to the previous case.
     if(sprite.ref.case !== null)
     {
@@ -157,11 +157,11 @@ function applyMove(sprite)
 {
     if(sprite.ref.case !== null)
     {
-        sprite.ref.case.escouade = null;
+        sprite.ref.case.squad = null;
     }
-    //linking the escouade to the new case.
+    //linking the squad to the new case.
     sprite.ref.case = sprite.ref.overlapedCase;
-    sprite.ref.overlapedCase.escouade = sprite.ref;
+    sprite.ref.overlapedCase.squad = sprite.ref;
 
     // move the sprite of the esouade to his new position 
     sprite.x = sprite.ref.overlapedCase.phaserObject.x;
@@ -174,7 +174,7 @@ function move(sprite)
     {
         if(sprite.ref.case !== null)
         {
-            sprite.ref.case.escouade = null;
+            sprite.ref.case.squad = null;
         }
         sprite.ref.movesAllowed = sprite.ref.movesAllowed + 1;
         sprite.ref.movedFrom.pop();

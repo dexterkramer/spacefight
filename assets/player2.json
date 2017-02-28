@@ -2,9 +2,9 @@
     "name" : "toto2",
     "fleat" : {
         "name" : "maSuperFlote2",
-        "escouades" : [
+        "squads" : [
             {
-                "name" : "escouade1",
+                "name" : "squad1",
                 "ships" : [
                     {
                         "name" : "gros",
@@ -15,7 +15,7 @@
                 ]
             },
             {
-                "name" : "escouade2",
+                "name" : "squad2",
                 "ships" : [
                     {
                         "name" : "gros",
@@ -26,7 +26,7 @@
                 ]
             },
             {
-                "name" : "escouade3",
+                "name" : "squad3",
                 "ships" : [
                     {
                         "name" : "gros",
@@ -37,7 +37,7 @@
                 ]
             },
             {
-                "name" : "escouade4",
+                "name" : "squad4",
                 "ships" : [
                     {
                         "name" : "gros",

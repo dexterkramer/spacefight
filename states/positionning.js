@@ -20,7 +20,7 @@ function OverLapPositioningDraggingManagment(squad, oldOverLapped)
     {
         NotOverLaped(oldOverLapped);
     }
-    if(squad.overlapedCase !== null && squad.overlapedCase.escouade !== null && squad.overlapedCase.escouade !== squad)
+    if(squad.overlapedCase !== null && squad.overlapedCase.squad !== null && squad.overlapedCase.squad !== squad)
     {
         BadOverLaped(squad.overlapedCase);
     }
@@ -59,27 +59,27 @@ function actionOnClick()
 
 function okToFinishPositioning(player)
 {
-    var escouadePositioned = true;
-    player.fleat.escouades.forEach(function(escouade){
-        if(escouade.case == null)
+    var squadPositioned = true;
+    player.fleat.squads.forEach(function(squad){
+        if(squad.case == null)
         {
-            escouadePositioned = false;
+            squadPositioned = false;
         }
     });
-    return escouadePositioned;
+    return squadPositioned;
 }
 
 function positioningPlayer(player)
 {
-    escouadesGroup = this.game.add.group();
-    var XposEscouade = 0;
-    var YposEscouade = 600;
-    player.fleat.escouades.forEach(function(escouade){
-        escouade.originalX = XposEscouade;
-        escouade.originalY = YposEscouade;
-        XposEscouade = XposEscouade + 100;
+    squadsGroup = this.game.add.group();
+    var XposSquad = 0;
+    var YposSquad = 600;
+    player.fleat.squads.forEach(function(squad){
+        squad.originalX = XposSquad;
+        squad.originalY = YposSquad;
+        XposSquad = XposSquad + 100;
     });
 
     drawPlayerSquads(player);
-    enableDrag(player, dragEscouade, stopDragEscouade);
+    enableDrag(player, dragSquad, stopDragSquad);
 }
