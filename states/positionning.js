@@ -18,15 +18,15 @@ function OverLapPositioningDraggingManagment(squad, oldOverLapped)
 {
     if(typeof oldOverLapped !== "undefined" && oldOverLapped !== null && oldOverLapped !== squad.overlapedCase )
     {
-        NotOverLaped(oldOverLapped);
+        oldOverLapped.NotOverLaped();
     }
     if(squad.overlapedCase !== null && squad.overlapedCase.squad !== null && squad.overlapedCase.squad !== squad)
     {
-        BadOverLaped(squad.overlapedCase);
+        squad.overlapedCase.BadOverLaped();
     }
     else if(squad.overlapedCase !== null)
     {
-        OverLaped(squad.overlapedCase); 
+        squad.overlapedCase.OverLaped(); 
     }
 }
 
@@ -42,7 +42,7 @@ function finish()
 
 function actionOnClick()
 {
-    if(okToFinishPositioning(this.game.turn.player))
+    if(this.game.turn.player.okToFinishPositioning())
     {
         disableDragingFroPlayer(this.game.turn.player); 
         nextPlayer(false);
@@ -55,18 +55,6 @@ function actionOnClick()
             finish();
         }
     }
-}
-
-function okToFinishPositioning(player)
-{
-    var squadPositioned = true;
-    player.fleat.squads.forEach(function(squad){
-        if(squad.case == null)
-        {
-            squadPositioned = false;
-        }
-    });
-    return squadPositioned;
 }
 
 function positioningPlayer(player)

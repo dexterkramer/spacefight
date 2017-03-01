@@ -19,44 +19,33 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
 {
     if(typeof oldOverLapped !== "undefined" && oldOverLapped !== null && oldOverLapped !== squad.overlapedCase )
     {
-        NotOverLaped(oldOverLapped);
+        oldOverLapped.NotOverLaped();
     }
     if(squad.overlapedCase !== null)
     {
-        if(canGo(squad.overlapedCase, squad))
+        if(squad.canGo(squad.overlapedCase))
         {
             if(squad.overlapedCase.squad != null)
             {
                 if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
                 {
-                    AttackOverLaped(squad.overlapedCase);
+                    squad.overlapedCase.AttackOverLaped();
                 }
                 else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
                 {
-                    SupportOverLaped(squad.overlapedCase);
+                    squad.overlapedCase.SupportOverLaped();
                 }
             }
             else
             {
                 if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
                 {  
-                    OverLaped(squad.overlapedCase);
+                    squad.overlapedCase.OverLaped();
                 }
             }
         }
     }
 }
-
-
-function resetSquadsActions(player)
-{
-    player.fleat.squads.forEach(function(squad){
-        squad.movesAllowed = 1;
-        squad.tempAction = null;
-        squad.movedFrom = [];
-    });
-}
-
 
 function nextTurn()
 {
@@ -66,46 +55,18 @@ function nextTurn()
     }
     this.game.turn.number++;
     nextPlayer();
-    resetSquadsActions(this.game.turn.player);
+    this.game.turn.player.resetSquadsActions();
     enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
 }
-
-function canGo(oneCase, squad)
-{
-    if(squad.case !== null)
-    {
-        if(squad.case.left == oneCase || squad.case.right == oneCase || squad.case.top == oneCase || squad.case.bottom == oneCase)
-        {
-            return true;
-        }
-        if(squad.case.right !== null && (squad.case.right.bottom == oneCase || squad.case.right.top == oneCase ))
-        {
-            return true;
-        }
-        if(squad.case.left !== null && (squad.case.left.bottom == oneCase || squad.case.left.top == oneCase ))
-        {
-            return true;
-        }
-        if(squad.case.top !== null && (squad.case.top.right == oneCase || squad.case.top.left == oneCase ))
-        {
-            return true;
-        }
-        if(squad.case.bottom !== null && (squad.case.bottom.right == oneCase || squad.case.bottom.left == oneCase ))
-        {
-            return true;
-        }
-    }
-}
-
 
 function stopDragSquadGaming(sprite, pointer)
 {
     sprite.body.moves = false;
     sprite.ref.isDragged = false;
     // has the squad been dragged on a case ?
-    if(sprite.ref.overlapedCase !== null && canGo(sprite.ref.overlapedCase, sprite.ref))
+    if(sprite.ref.overlapedCase !== null && sprite.ref.canGo(sprite.ref.overlapedCase))
     {
-        NotOverLaped(sprite.ref.overlapedCase);
+        sprite.ref.overlapedCase.NotOverLaped();
         // does the case already coutain an squad ?
         if(sprite.ref.overlapedCase.squad == null)
         {
@@ -120,7 +81,7 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                attack(sprite, sprite.ref.overlapedCase.squad);
+                attack(sprite.ref, sprite.ref.overlapedCase.squad);
             }
         }
     }
@@ -144,18 +105,35 @@ function support(sprite)
     console.log('support');
 }
 
-function attack(sprite, target)
+function attack(squad, target)
 {
     // go here if the squad is moved to a case already countaining a fleet.
     // if the esouade had already a case : get back to the previous case.
-    if(sprite.ref.case !== null)
+    if(squad.case !== null)
     {
-        sprite.x = sprite.ref.case.phaserObject.x;
-        sprite.y = sprite.ref.case.phaserObject.y;
+        squad.phaserObject.x = squad.case.phaserObject.x;
+        squad.phaserObject.y = squad.case.phaserObject.y;
     }
-    console.log('attack');
-    drawAttack(sprite.ref, target);
+    squad.initFinalArmor();
+    target.initFinalArmor();
+    squad.attack(target);
+    if(target.canDefend())
+    {
+        target.attack(squad);
+    }
+    target.applyDamages();
+    squad.applyDamages();
+    squad.updateLifeBar();
+    target.updateLifeBar();
+    squad.drawLifeBar(this.game);
+    target.drawLifeBar(this.game);
+    drawAttack(squad, target);
+    squad.action = new attackAction(target);
 }
+
+var attackAction = function(target){
+    this.target = target;
+};
 
 function drawAttack(squad, squad2)
 {
@@ -170,21 +148,6 @@ function drawAttack(squad, squad2)
     arrow.y = arrow.y + ((arrow.height)  * (Math.cos(angle)/ Math.sin(angle)));*/
 }
 
-function applyMove(sprite)
-{
-    if(sprite.ref.case !== null)
-    {
-        sprite.ref.case.squad = null;
-    }
-    //linking the squad to the new case.
-    sprite.ref.case = sprite.ref.overlapedCase;
-    sprite.ref.overlapedCase.squad = sprite.ref;
-
-    // move the sprite of the esouade to his new position 
-    sprite.x = sprite.ref.overlapedCase.phaserObject.x;
-    sprite.y = sprite.ref.overlapedCase.phaserObject.y;
-}
-
 function move(sprite)
 {
     if(sprite.ref.movedFrom[sprite.ref.movedFrom.length - 1] == sprite.ref.overlapedCase)
@@ -195,14 +158,14 @@ function move(sprite)
         }
         sprite.ref.movesAllowed = sprite.ref.movesAllowed + 1;
         sprite.ref.movedFrom.pop();
-        applyMove(sprite);
+        sprite.ref.applyMove();
     }
     else if (sprite.ref.movesAllowed > 0)
     {
         
         sprite.ref.movesAllowed--;
         sprite.ref.movedFrom.push(sprite.ref.case);
-        applyMove(sprite);
+        sprite.ref.applyMove();
     }
     else
     {

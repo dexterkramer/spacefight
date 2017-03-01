@@ -15,8 +15,6 @@ preload.prototype = {
         game.load.image('space', 'assets/deep-space.jpg');
         game.load.image('attackOverLaped', 'assets/attackOverLaped.png');
         game.load.image('red-arrow', 'assets/red-arrow.png');
-        
-        
 	},
   	create: function(){
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
@@ -29,101 +27,11 @@ preload.prototype = {
 	}
 }
 
-var oneTurn = function()
-{
-    this.player = null;
-}
-
 function clearGameCache (game) {
     game.cache = new Phaser.Cache(game);
     game.load.reset();
     game.load.removeAll();
 }
-
-var onePlayer = function(name, number)
-{
-    this.name = name;
-    this.number = number;
-    this.availableCasePositioning = null;
-}
-
-var oneSquad = function(name, fleat)
-{
-    this.name = name;
-    this.fleat = fleat;
-    this.ships = [];
-    this.case = null;
-    this.action = null;
-    this.phaserObject = null;
-    this.overlapedCase = null;
-    this.movesAllowed = 0;
-    this.movedFrom = null;
-    this.tempAction = null;
-};
-
-var lifeBar = function(armor, shield)
-{
-    this.armor = armor;
-    this.shield = shield;
-    this.phaserObject = null;
-    this.textObject = null;
-}
-
-oneSquad.prototype = {
-    addShip : function(ship)
-    {
-        this.ships.push(ship);
-    },
-    createLifeBar : function()
-    {
-        var totalArmor = 0;
-        var totalShield = 0;
-        this.ships.forEach(function(ship){
-            totalArmor += ship.lifeBar.armor;
-            totalShield += ship.lifeBar.shield;
-        });
-        this.lifeBar = new lifeBar(totalArmor, totalShield);
-    }
-};
-
-
-
-var ship = function(infos)
-{
-    this.infos = infos;
-    this.createLifeBar();
-};
-
-ship.prototype = {
-    createLifeBar : function()
-    {
-        this.lifeBar = new lifeBar(this.infos.armor, this.infos.shield);
-    }
-};
-
-var oneFleat = function(name, player)
-{
-    this.name = name;
-    this.squads = [];
-    this.player = player;
-    player.fleat = this;
-};
-
-oneFleat.prototype = {
-    addSquad : function(squad)
-    {
-        this.squads.push(squad);
-    }
-};
-
-var onePlayer = function(name, number, availableCasePositioning)
-{
-    this.name = name;
-    this.fleat = null;
-    this.blocked = true;
-    this.number = number;
-    this.availableCasePositioning = availableCasePositioning;
-};
 
 function createFleat(player, fleatJson)
 {
@@ -151,62 +59,7 @@ function createPlayer(playerJson, number, availableCasePositioning)
     return player;
 }
 
-
-
-
-var oneCase = function(name,number,width,height){
-    this.position = {};
-    this.position.x = null;
-    this.position.y = null;
-    this.number = number;
-    this.name = name;
-    this.squad = null;
-    this.left = null;
-    this.right = null;
-    this.top = null;
-    this.bottom = null;
-    this.height = height;
-    this.width = width;
-    this.phaserObject = null;
-};
-
-
-
-function findCasePosition(elem)
-{
-    var theElement = elem;
-    while(theElement.left != null)
-    {
-        theElement = theElement.left;
-        if(theElement.x !== null)
-        {
-            elem.position.x =  elem.position.x + theElement.position.x + theElement.width;
-            break;
-        }
-        elem.position.x = elem.position.x + theElement.width;
-    }
-    var theElement = elem;
-    while(theElement.top != null)
-    {
-        theElement = theElement.top;
-        if(theElement.y !== null)
-        {
-            elem.position.y = theElement.position.y + theElement.height;
-            break;
-        }
-        elem.position.y = elem.position.y + theElement.height;
-    }
-    if(elem.position.y == null)
-    {
-        elem.position.y = 0;
-    }
-    if(elem.position.x == null)
-    {
-        elem.position.x = 0;
-    }
-}
-
-function createCases (casemap)
+function createCases(casemap)
 {
     var caseByLine = 4;
     var lines = 4;
@@ -223,8 +76,8 @@ function createCases (casemap)
         caseTable[elem.number].bottom = (elem.links.bottom !== null) ? caseTable[elem.links.bottom] : null;
     });
 
-    caseTable.forEach(function(elem){
-        findCasePosition(elem);
+    caseTable.forEach(function(oneCase){
+        oneCase.findCasePosition();
     });
     return caseTable;
 }
