@@ -128,12 +128,8 @@ function attack(squad, target)
     squad.drawLifeBar(this.game);
     target.drawLifeBar(this.game);
     drawAttack(squad, target);
-    squad.action = new attackAction(target);
+    squad.action = new action("attack", target);
 }
-
-var attackAction = function(target){
-    this.target = target;
-};
 
 function drawAttack(squad, squad2)
 {
