@@ -107,19 +107,19 @@ function support(sprite)
 
 function attack(squad, target)
 {
-    // the squad have already made an action this turn
-    if(squad.action != null)
-    {
-        return false;
-    }
-
     // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
     {
         squad.phaserObject.x = squad.case.phaserObject.x;
         squad.phaserObject.y = squad.case.phaserObject.y;
     }
-    
+
+    // the squad have already made an action this turn
+    if(squad.action != null)
+    {
+        return false;
+    }
+
     // the defending squad will respond to the attacking squad with his available ships 
     // before the damages are applied
     squad.initFinalArmor();
