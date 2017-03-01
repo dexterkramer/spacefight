@@ -13,6 +13,7 @@ onePlayer.prototype = {
         this.fleat.squads.forEach(function(squad){
             squad.movesAllowed = 1;
             squad.tempAction = null;
+            squad.action = null;
             squad.movedFrom = [];
         });
     },

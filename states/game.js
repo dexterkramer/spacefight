@@ -107,13 +107,21 @@ function support(sprite)
 
 function attack(squad, target)
 {
-    // go here if the squad is moved to a case already countaining a fleet.
-    // if the esouade had already a case : get back to the previous case.
+    // the squad have already made an action this turn
+    if(squad.action != null)
+    {
+        return false;
+    }
+
+    // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
     {
         squad.phaserObject.x = squad.case.phaserObject.x;
         squad.phaserObject.y = squad.case.phaserObject.y;
     }
+    
+    // the defending squad will respond to the attacking squad with his available ships 
+    // before the damages are applied
     squad.initFinalArmor();
     target.initFinalArmor();
     squad.attack(target);
@@ -129,6 +137,7 @@ function attack(squad, target)
     target.drawLifeBar(this.game);
     drawAttack(squad, target);
     squad.action = new action("attack", target);
+    return true;
 }
 
 function drawAttack(squad, squad2)
