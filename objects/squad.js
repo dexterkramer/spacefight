@@ -158,6 +158,7 @@ oneSquad.prototype = {
                 return true;
             }
         }
+        return false;
     },
     attack : function(defendingSquad)
     {
