@@ -10,6 +10,7 @@ positionning.prototype = {
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
       },
     update : function(){
+        this.game.turn.player.availableCasePositioning = this.game.caseTable;
         checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
     }
 }

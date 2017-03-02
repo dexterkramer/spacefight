@@ -34,7 +34,21 @@ oneSquad.prototype = {
         let overLapCase = null;
         var ref = this;
         caseTable.forEach(function(oneCase){
-            if(!game.physics.arcade.overlap(ref.phaserObject, oneCase.phaserObject, function(esc,theCase) {
+            if (oneCase.phaserObject.contains(game.input.x, game.input.y))
+            {
+                /*let intersects = Phaser.Rectangle.intersection(esc, theCase);
+                let thisOverlap = intersects.width * intersects.height;
+                if(thisOverlap > overLapValue || overLapCase == oneCase)
+                {
+                    overLapCase = oneCase;
+                    overLapValue = thisOverlap;
+                }*/
+                overLapCase = oneCase;
+            }
+
+
+            /*if(!game.physics.arcade.overlap(ref.phaserObject, oneCase.phaserObject, function(esc,theCase) {
+                console.log('ici');
                 let intersects = Phaser.Rectangle.intersection(esc, theCase);
                 let thisOverlap = intersects.width * intersects.height;
                 if(thisOverlap > overLapValue || overLapCase == oneCase)
@@ -47,7 +61,7 @@ oneSquad.prototype = {
                 {
                     overLapCase = null;
                 }
-            }
+            }*/
         });
         return overLapCase;
     },
