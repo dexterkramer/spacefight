@@ -54,6 +54,10 @@ function nextTurn()
         disableDragingFroPlayer(this.game.turn.player);
     }
     this.game.turn.number++;
+    if(this.game.turn.player != null)
+    {
+        this.game.turn.player.resetEffects();
+    }
     nextPlayer();
     this.game.turn.player.resetSquadsActions();
     enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
@@ -77,11 +81,14 @@ function stopDragSquadGaming(sprite, pointer)
         {
             if(sprite.ref.overlapedCase.squad.fleat.player == sprite.ref.fleat.player)
             {
-                support(sprite);
+                support(sprite.ref, sprite.ref.overlapedCase.squad);
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                attack(sprite.ref, sprite.ref.overlapedCase.squad);
+                if(attack(sprite.ref, sprite.ref.overlapedCase.squad))
+                {
+                   sprite.ref.disableDrag();
+                }
             }
         }
     }
@@ -93,16 +100,27 @@ function stopDragSquadGaming(sprite, pointer)
     }
 }
 
-function support(sprite)
+function support(squad, target)
 {
     // go here if the squad is moved to a case already countaining a fleet.
     // if the esouade had already a case : get back to the previous case.
-    if(sprite.ref.case !== null)
+    if(squad.case !== null)
     {
-        sprite.x = sprite.ref.case.phaserObject.x;
-        sprite.y = sprite.ref.case.phaserObject.y;
+        squad.phaserObject.x = squad.case.phaserObject.x;
+        squad.phaserObject.y = squad.case.phaserObject.y;
     }
-    console.log('support');
+
+    // stop if the squad have already made an action this turn
+    if(squad.action != null)
+    {
+        return false;
+    }
+    
+    squad.support(target);
+    target.updateLifeBar();
+    target.drawLifeBar(this.game);
+    squad.action = new action("support", target);
+    return true;
 }
 
 function attack(squad, target)
@@ -114,10 +132,13 @@ function attack(squad, target)
         squad.phaserObject.y = squad.case.phaserObject.y;
     }
 
-    // the squad have already made an action this turn
+    // stop if the squad have already made an action this turn
     if(squad.action != null)
     {
-        return false;
+        if(squad.action.type == "attack")
+        {
+            return false;
+        }
     }
 
     // the defending squad will respond to the attacking squad with his available ships 
@@ -137,6 +158,7 @@ function attack(squad, target)
     target.drawLifeBar(this.game);
     drawAttack(squad, target);
     squad.action = new action("attack", target);
+    target.action = new action("defend", squad);
     return true;
 }
 

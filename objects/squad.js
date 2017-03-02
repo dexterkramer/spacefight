@@ -7,9 +7,10 @@ var oneSquad = function(name, fleat)
     this.action = null;
     this.phaserObject = null;
     this.overlapedCase = null;
-    this.movesAllowed = 0;
-    this.movedFrom = null;
+    this.movesAllowed = 1;
+    this.movedFrom = [];
     this.tempAction = null;
+    this.attackModifiersArray = [];
 };
 
 oneSquad.prototype = {
@@ -68,7 +69,7 @@ oneSquad.prototype = {
         this.lifeBar.phaserObject = lifeBar;
         lifeBar.anchor.set(0, 0);
         var style = { font: "9px Arial",/* fill: "#ff0044", wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
-        text = game.add.text(lifeBar.x, lifeBar.y - (lifeBarHeight / 2) - 3, this.lifeBar.armor + "/" + this.lifeBar.armor , style);
+        text = game.add.text(lifeBar.x, lifeBar.y - (lifeBarHeight / 2) - 3, this.lifeBar.armor + "/" + this.lifeBar.maxArmor , style);
         text.x = ((lifebarWidth * percent) / 2) - (text.width / 2);
         this.lifeBar.textObject = text;
         this.phaserObject.addChild(text);
@@ -81,11 +82,13 @@ oneSquad.prototype = {
     {
         var totalArmor = 0;
         var totalShield = 0;
+        var totalMaxArmor = 0;
         this.ships.forEach(function(ship){
             totalArmor += ship.lifeBar.armor;
             totalShield += ship.lifeBar.shield;
+            totalMaxArmor += ship.lifeBar.maxArmor;
         });
-        this.lifeBar = new lifeBar(totalArmor, totalShield);
+        this.lifeBar = new lifeBar(totalArmor, totalShield, totalMaxArmor);
     },
     updateLifeBar : function()
     {
@@ -100,6 +103,10 @@ oneSquad.prototype = {
     },
     canDefend : function()
     {
+        if(this.action != null && this.action.type == "defend")
+        {
+            this.addAttackModifier(createDamageModifier(0.9,1));
+        }
         return true;
     },
     applyDamages : function()
@@ -170,6 +177,7 @@ oneSquad.prototype = {
             }
             shipGroups.push(selectedShips);
         }
+        var ref = this;
         shipGroups.forEach(function(shipGroup){
             if(defendingShipArray.length >= 0)
             {
@@ -177,8 +185,7 @@ oneSquad.prototype = {
                 shipGroup.forEach(function(ship){
                     if(typeof defendingShipArray[selectedEnnemyIndex] !== "undefined")
                     {
-                        defendingShipArray[selectedEnnemyIndex].lifeBar.tempArmor -= ship.infos.firePower;
-                        defendingShipArray[selectedEnnemyIndex].lifeBar.finalArmor -= ship.infos.firePower;
+                        ship.attack(defendingShipArray[selectedEnnemyIndex], ref.attackModifiersArray);
                         if(defendingShipArray[selectedEnnemyIndex].lifeBar.tempArmor <= 0)
                         {
                             defendingShipArray.splice(selectedEnnemyIndex, 1);
@@ -186,6 +193,63 @@ oneSquad.prototype = {
                     }
                 });
             }
+        });
+        ref.movesAllowed = 0;
+    },
+    disableDrag : function()
+    {
+        this.phaserObject.input.disableDrag();
+    },
+    getAvailableSupportedShip : function()
+    {
+        var shipArray = [];
+        this.ships.forEach(function(ship, index){
+            if(ship.lifeBar.armor > 0 && ship.lifeBar.armor < ship.lifeBar.maxArmor)
+            {
+                shipArray.push(ship);
+            }
+        });
+        return shipArray;
+    },
+    support : function(target)
+    {
+        var supportingShipArray = this.getAvailableShips();
+        var targetShipArray = target.getAvailableSupportedShip();
+        if(targetShipArray.length == 0 || supportingShipArray.length == 0)
+        {
+            return false;
+        }
+        supportingShipArray.forEach(function(ship){
+            let selectedTargetIndex = Math.floor(Math.random()*targetShipArray.length);
+            targetShipArray[selectedTargetIndex].lifeBar.armor += ship.infos.support;
+            if(targetShipArray[selectedTargetIndex].lifeBar.armor >= targetShipArray[selectedTargetIndex].lifeBar.maxArmor)
+            {
+                targetShipArray[selectedTargetIndex].lifeBar.armor = targetShipArray[selectedTargetIndex].lifeBar.maxArmor;
+                targetShipArray.splice(selectedTargetIndex, 1);
+            }
+        });
+        // after supporting a squad, one squad cannot move but can perform an attack, with -70% damages
+        this.movesAllowed = 0;
+        this.addAttackModifier(createDamageModifier(0.7,1));
+        return true;
+    },
+    addAttackModifier : function(attackModifier)
+    {
+        this.attackModifiersArray.push(attackModifier);
+    },
+    resetModifiers : function()
+    {
+        var toRemove = [];
+        this.attackModifiersArray.forEach(function(modifier, index){
+            modifier.turns -= 1;
+            if(modifier.turns <= 0)
+            {
+                toRemove.push(index);
+            }
+        });
+        var ref = this;
+        toRemove.forEach(function(indexToRemove){
+            ref.attackModifiersArray.splice(indexToRemove, 1);
         });
     }
 };

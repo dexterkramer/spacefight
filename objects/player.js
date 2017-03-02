@@ -15,6 +15,13 @@ onePlayer.prototype = {
             squad.tempAction = null;
             squad.action = null;
             squad.movedFrom = [];
+            
+        });
+    },
+    resetEffects : function()
+    {
+        this.fleat.squads.forEach(function(squad){
+            squad.resetModifiers();
         });
     },
     okToFinishPositioning : function()
