@@ -34,7 +34,7 @@ oneSquad.prototype = {
         let overLapCase = null;
         var ref = this;
         caseTable.forEach(function(oneCase){
-            if (oneCase.phaserObject.contains(game.input.x, game.input.y))
+            if (oneCase.phaserObject.points.contains(game.input.x, game.input.y))
             {
                 /*let intersects = Phaser.Rectangle.intersection(esc, theCase);
                 let thisOverlap = intersects.width * intersects.height;
@@ -75,6 +75,7 @@ oneSquad.prototype = {
         {
             this.lifeBar.textObject.destroy();
         }
+        console.log(lifeBarX, lifeBarY);
         var lifeBar = game.add.graphics(lifeBarX, lifeBarY);
         var percent = this.lifeBar.armor / this.lifeBar.startArmor; 
         lifeBar.lineStyle(lifeBarHeight, getLifeBarColor(percent));
