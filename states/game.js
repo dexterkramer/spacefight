@@ -95,8 +95,8 @@ function stopDragSquadGaming(sprite, pointer)
     else
     {
         // set the squad to the original position.
-        sprite.x = sprite.ref.case.phaserObject.x;
-        sprite.y = sprite.ref.case.phaserObject.y;
+        sprite.x = sprite.ref.case.phaserObject.middleX;
+        sprite.y = sprite.ref.case.phaserObject.middleY;
     }
 }
 
@@ -106,8 +106,8 @@ function support(squad, target)
     // if the esouade had already a case : get back to the previous case.
     if(squad.case !== null)
     {
-        squad.phaserObject.x = squad.case.phaserObject.x;
-        squad.phaserObject.y = squad.case.phaserObject.y;
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
 
     // stop if the squad have already made an action this turn
@@ -128,8 +128,8 @@ function attack(squad, target)
     // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
     {
-        squad.phaserObject.x = squad.case.phaserObject.x;
-        squad.phaserObject.y = squad.case.phaserObject.y;
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
 
     // stop if the squad have already made an action this turn
@@ -198,8 +198,8 @@ function move(sprite)
     {
         if(sprite.ref.case !== null)
         {
-            sprite.x = sprite.ref.case.phaserObject.x;
-            sprite.y = sprite.ref.case.phaserObject.y;
+            sprite.x = sprite.ref.case.phaserObject.middleX;
+            sprite.y = sprite.ref.case.phaserObject.middleY;
         }
     }
     console.log('move');

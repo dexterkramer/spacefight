@@ -2,209 +2,248 @@
     {
         "name" : "case1",
         "number" : 0,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : null,
             "right" : 1,
-            "top" : null,
-            "bottom" : 4 
+            "topLeft" : null,
+            "topRight" : null,
+            "bottomLeft" : 3,
+            "bottomRight" : 4
         }
     },
     {
         "name" : "case2",
         "number" : 1,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 0,
             "right" : 2,
-            "top" : null,
-            "bottom" : 5 
+            "topLeft" : null,
+            "topRight" : null,
+            "bottomLeft" : 4,
+            "bottomRight" : 5
         }
     },
     {
         "name" : "case3",
         "number" : 2,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 1,
-            "right" : 3,
-            "top" : null,
-            "bottom" : 6 
+            "right" : null,
+            "topLeft" : null,
+            "topRight" : null,
+            "bottomLeft" : 5,
+            "bottomRight" : 6
         }
     },
     {
         "name" : "case4",
         "number" : 3,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
-            "left" : 2,
-            "right" : null,
-            "top" : null,
-            "bottom" : 7 
+            "left" : null,
+            "right" : 4,
+            "topLeft" : null,
+            "topRight" : 0,
+            "bottomLeft" : 7,
+            "bottomRight" : 8
         }
     },
     {
         "name" : "case5",
         "number" : 4,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
-            "left" : null,
+            "left" : 3,
             "right" : 5,
-            "top" : 0,
-            "bottom" : 8 
+            "topLeft" : 0,
+            "topRight" : 1,
+            "bottomLeft" : 8,
+            "bottomRight" : 9
         }
     },
     {
         "name" : "case6",
         "number" : 5,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 4,
             "right" : 6,
-            "top" : 1,
-            "bottom" : 9 
+            "topLeft" : 1,
+            "topRight" : 2,
+            "bottomLeft" : 9,
+            "bottomRight" : 10
         }
     },
     {
         "name" : "case7",
         "number" : 6,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 5,
-            "right" : 7,
-            "top" : 2,
-            "bottom" : 10 
+            "right" : null,
+            "topLeft" : 2,
+            "topRight" : null,
+            "bottomLeft" : 10,
+            "bottomRight" : 11
         }
     },
     {
         "name" : "case8",
         "number" : 7,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
-            "left" : 6,
-            "right" : null,
-            "top" : 3,
-            "bottom" : 11 
+            "left" : null,
+            "right" : 8,
+            "topLeft" : null,
+            "topRight" : 3,
+            "bottomLeft" : null,
+            "bottomRight" : 12
         }
     },
     {
         "name" : "case9",
         "number" : 8,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
-            "left" : null,
+            "left" : 7,
             "right" : 9,
-            "top" : 4,
-            "bottom" : 12 
+            "topLeft" : 3,
+            "topRight" : 4,
+            "bottomLeft" : 12,
+            "bottomRight" : 13
         }
     },
     {
         "name" : "case10",
         "number" : 9,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 8,
             "right" : 10,
-            "top" : 5,
-            "bottom" : 13 
+            "topLeft" : 4,
+            "topRight" : 5,
+            "bottomLeft" : 13,
+            "bottomRight" : 14
         }
     },
     {
         "name" : "case11",
         "number" : 10,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 9,
             "right" : 11,
-            "top" : 6,
-            "bottom" : 14 
+            "topLeft" : 5,
+            "topRight" : 6,
+            "bottomLeft" : 14,
+            "bottomRight" : 15
         }
     },
     {
         "name" : "case12",
         "number" : 11,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 10,
             "right" : null,
-            "top" : 7,
-            "bottom" : 15 
+            "topLeft" : 6,
+            "topRight" : null,
+            "bottomLeft" : 15,
+            "bottomRight" : null
         }
     },
     {
         "name" : "case13",
         "number" : 12,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : null,
             "right" : 13,
-            "top" : 8,
-            "bottom" : null 
+            "topLeft" : 7,
+            "topRight" : 8,
+            "bottomLeft" : null,
+            "bottomRight" : 16
         }
     },
     {
         "name" : "case14",
         "number" : 13,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 12,
             "right" : 14,
-            "top" : 9,
-            "bottom" : null
+            "topLeft" : 8,
+            "topRight" : 9,
+            "bottomLeft" : 16,
+            "bottomRight" : 17
         }
     },
     {
         "name" : "case15",
         "number" : 14,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 13,
             "right" : 15,
-            "top" : 10,
-            "bottom" : null 
+            "topLeft" : 9,
+            "topRight" : 10,
+            "bottomLeft" : 17,
+            "bottomRight" : 18
         }
     },
     {
         "name" : "case16",
         "number" : 15,
-        "height" : 150,
-        "width" : 150,
         "links" : 
         {
             "left" : 14,
             "right" : null,
-            "top" : 11,
-            "bottom" : null
+            "topLeft" : 10,
+            "topRight" : 11,
+            "bottomLeft" : 18,
+            "bottomRight" : null
+        }
+    },
+    {
+        "name" : "case17",
+        "number" : 16,
+        "links" : 
+        {
+            "left" : null,
+            "right" : 17,
+            "topLeft" : 12,
+            "topRight" : 13,
+            "bottomLeft" : null,
+            "bottomRight" : null
+        }
+    },
+    {
+        "name" : "case18",
+        "number" : 17,
+        "links" : 
+        {
+            "left" : 16,
+            "right" : 18,
+            "topLeft" : 13,
+            "topRight" : 14,
+            "bottomLeft" : null,
+            "bottomRight" : null
+        }
+    },
+    {
+        "name" : "case19",
+        "number" : 18,
+        "links" : 
+        {
+            "left" : 17,
+            "right" : null,
+            "topLeft" : 14,
+            "topRight" : 15,
+            "bottomLeft" : null,
+            "bottomRight" : null
         }
     }
 ]

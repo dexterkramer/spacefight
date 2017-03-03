@@ -50,22 +50,37 @@ oneCase.prototype = {
     },
     BadOverLaped : function()
     {
-        this.phaserObject.loadTexture('badOverLapedCase', 0);
+        this.phaserObject.beginFill(0xDBDEE9);
+        this.phaserObject.alpha= 1;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
     },
     OverLaped : function()
     {
-        this.phaserObject.loadTexture('overLapedCase', 0);
+        this.phaserObject.beginFill(0xFEEC42);
+        this.phaserObject.alpha= 1;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
     },
     NotOverLaped : function()
     {
-        this.phaserObject.loadTexture('case', 0);
+        this.phaserObject.beginFill(0xFF0000);
+        this.phaserObject.alpha= 0;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
     },
     AttackOverLaped : function()
     {
-        this.phaserObject.loadTexture('attackOverLaped', 0);
+        this.phaserObject.beginFill(0xFF0000);
+        this.phaserObject.alpha= 1;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
     },
     SupportOverLaped : function()
     {
-        this.phaserObject.loadTexture('supportLapedCase', 0);
+        this.phaserObject.beginFill(0x4ED709);
+        this.phaserObject.alpha= 1;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
     }
 }

@@ -17,5 +17,13 @@ ship.prototype = {
         });
         target.lifeBar.tempArmor -= firePower;
         target.lifeBar.finalArmor -= firePower;
+        if(target.lifeBar.tempArmor < 0)
+        {
+            target.lifeBar.tempArmor = 0;
+        }
+        if(target.lifeBar.finalArmor < 0)
+        {
+            target.lifeBar.finalArmor = 0;
+        }
     }
 };
