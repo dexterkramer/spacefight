@@ -33,6 +33,7 @@ oneSquad.prototype = {
         let overLapValue = 0;
         let overLapCase = null;
         var ref = this;
+        console.log("azeaze");
         caseTable.forEach(function(oneCase){
             if (oneCase.phaserObject.points.contains(game.input.x, game.input.y))
             {
@@ -45,7 +46,7 @@ oneSquad.prototype = {
                 }*/
                 overLapCase = oneCase;
             }
-
+            
 
             /*if(!game.physics.arcade.overlap(ref.phaserObject, oneCase.phaserObject, function(esc,theCase) {
                 console.log('ici');
