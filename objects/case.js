@@ -54,7 +54,6 @@ oneCase.prototype = {
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
-        //this.phaserObject.loadTexture('badOverLapedCase', 0);
     },
     OverLaped : function()
     {
@@ -62,7 +61,6 @@ oneCase.prototype = {
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
-        //this.phaserObject.loadTexture('overLapedCase', 0);
     },
     NotOverLaped : function()
     {
@@ -70,7 +68,6 @@ oneCase.prototype = {
         this.phaserObject.alpha= 0;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
-        //this.phaserObject.loadTexture('case', 0);
     },
     AttackOverLaped : function()
     {
@@ -78,14 +75,12 @@ oneCase.prototype = {
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
-        //this.phaserObject.loadTexture('attackOverLaped', 0);
     },
     SupportOverLaped : function()
     {
-        this.phaserObject.beginFill(0xFF0000);
+        this.phaserObject.beginFill(0x4ED709);
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
-        //this.phaserObject.loadTexture('supportLapedCase', 0);
     }
 }

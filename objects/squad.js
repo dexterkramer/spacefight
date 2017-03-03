@@ -25,44 +25,19 @@ oneSquad.prototype = {
         this.overlapedCase.squad = this;
 
         // move the sprite of the esouade to his new position 
-        this.phaserObject.x = this.overlapedCase.phaserObject.x;
-        this.phaserObject.y = this.overlapedCase.phaserObject.y;
+        this.phaserObject.x = this.overlapedCase.phaserObject.middleX;
+        this.phaserObject.y = this.overlapedCase.phaserObject.middleY;
     },
     getOverlapedCase : function(caseTable, game)
     {
         let overLapValue = 0;
         let overLapCase = null;
         var ref = this;
-        console.log("azeaze");
         caseTable.forEach(function(oneCase){
             if (oneCase.phaserObject.points.contains(game.input.x, game.input.y))
             {
-                /*let intersects = Phaser.Rectangle.intersection(esc, theCase);
-                let thisOverlap = intersects.width * intersects.height;
-                if(thisOverlap > overLapValue || overLapCase == oneCase)
-                {
-                    overLapCase = oneCase;
-                    overLapValue = thisOverlap;
-                }*/
                 overLapCase = oneCase;
             }
-            
-
-            /*if(!game.physics.arcade.overlap(ref.phaserObject, oneCase.phaserObject, function(esc,theCase) {
-                console.log('ici');
-                let intersects = Phaser.Rectangle.intersection(esc, theCase);
-                let thisOverlap = intersects.width * intersects.height;
-                if(thisOverlap > overLapValue || overLapCase == oneCase)
-                {
-                    overLapCase = oneCase;
-                    overLapValue = thisOverlap;
-                }
-            })){
-                if(overLapCase == oneCase)
-                {
-                    overLapCase = null;
-                }
-            }*/
         });
         return overLapCase;
     },
@@ -76,7 +51,6 @@ oneSquad.prototype = {
         {
             this.lifeBar.textObject.destroy();
         }
-        console.log(lifeBarX, lifeBarY);
         var lifeBar = game.add.graphics(lifeBarX, lifeBarY);
         var percent = this.lifeBar.armor / this.lifeBar.startArmor; 
         lifeBar.lineStyle(lifeBarHeight, getLifeBarColor(percent));
@@ -85,8 +59,9 @@ oneSquad.prototype = {
         this.lifeBar.phaserObject = lifeBar;
         lifeBar.anchor.set(0, 0);
         var style = { font: "9px Arial",/* fill: "#ff0044", wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
-        text = game.add.text(lifeBar.x, lifeBar.y - (lifeBarHeight / 2) - 3, this.lifeBar.armor + "/" + this.lifeBar.maxArmor , style);
-        text.x = ((lifebarWidth * percent) / 2) - (text.width / 2);
+        text = game.add.text(lifeBarX, lifeBar.y - (lifeBarHeight / 2) - 3, this.lifeBar.armor + "/" + this.lifeBar.maxArmor , style);
+        text.anchor.set(0 , 0);
+        text.x = lifeBarX + ((lifebarWidth * percent) / 2) - (text.width / 2);
         this.lifeBar.textObject = text;
         this.phaserObject.addChild(text);
     },
@@ -153,23 +128,27 @@ oneSquad.prototype = {
     {
         if(this.case !== null)
         {
-            if(this.case.left == oneCase || this.case.right == oneCase || this.case.top == oneCase || this.case.bottom == oneCase)
+            if(this.case.left == oneCase)
+            {
+                return true;
+            }   
+            if(this.case.right == oneCase)
             {
                 return true;
             }
-            if(this.case.right !== null && (this.case.right.bottom == oneCase || this.case.right.top == oneCase ))
+            if(this.case.topLeft == oneCase)
             {
                 return true;
             }
-            if(this.case.left !== null && (this.case.left.bottom == oneCase || this.case.left.top == oneCase ))
+            if(this.case.topRight == oneCase)
             {
                 return true;
             }
-            if(this.case.top !== null && (this.case.top.right == oneCase || this.case.top.left == oneCase ))
+            if(this.case.bottomLeft == oneCase)
             {
                 return true;
             }
-            if(this.case.bottom !== null && (this.case.bottom.right == oneCase || this.case.bottom.left == oneCase ))
+            if(this.case.bottomRight == oneCase)
             {
                 return true;
             }

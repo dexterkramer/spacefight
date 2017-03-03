@@ -20,8 +20,8 @@ preload.prototype = {
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.players = [];
         this.game.caseTable = createCases(this.game.cache.getJSON('casemap'));
-        this.game.players.push(createPlayer(this.game.cache.getJSON('player1'), 0, this.game.caseTable.slice(Math.round(this.game.caseTable.length / 2), this.game.caseTable.length)));
-        this.game.players.push(createPlayer(this.game.cache.getJSON('player2'), 1, this.game.caseTable.slice(0 , Math.round(this.game.caseTable.length / 2))));
+        this.game.players.push(createPlayer(this.game.cache.getJSON('player1'), 0, this.game.caseTable.slice( 12 , 19)));
+        this.game.players.push(createPlayer(this.game.cache.getJSON('player2'), 1, this.game.caseTable.slice( 0 , 7 )));
         this.game.state.start("Positionning");
         this.game.turn = new oneTurn();
 	}
@@ -72,8 +72,10 @@ function createCases(casemap)
     casemap.forEach(function(elem){
         caseTable[elem.number].left = (elem.links.left !== null) ? caseTable[elem.links.left] : null;
         caseTable[elem.number].right = (elem.links.right !== null) ? caseTable[elem.links.right] : null;
-        caseTable[elem.number].top = (elem.links.top !== null) ? caseTable[elem.links.top] : null;
-        caseTable[elem.number].bottom = (elem.links.bottom !== null) ? caseTable[elem.links.bottom] : null;
+        caseTable[elem.number].topLeft = (elem.links.topLeft !== null) ? caseTable[elem.links.topLeft] : null;
+        caseTable[elem.number].topRight = (elem.links.topRight !== null) ? caseTable[elem.links.topRight] : null;
+        caseTable[elem.number].bottomLeft = (elem.links.bottomLeft !== null) ? caseTable[elem.links.bottomLeft] : null;
+        caseTable[elem.number].bottomRight = (elem.links.bottomRight !== null) ? caseTable[elem.links.bottomRight] : null;
     });
 
     caseTable.forEach(function(oneCase){
