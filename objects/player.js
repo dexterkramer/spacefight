@@ -6,6 +6,8 @@ var onePlayer = function(name, number, availableCasePositioning)
     this.number = number;
     this.availableCasePositioning = availableCasePositioning;
     this.movesAllowed = 1;
+    this.allOrders = [];
+    this.availableOrders = [];
 };
 
 onePlayer.prototype = {

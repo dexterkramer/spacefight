@@ -2,6 +2,44 @@
     "name" : "toto",
     "fleat" : {
         "name" : "maSuperFlote",
+        "orders" : [
+            {
+                "name" : "attaquez !!!!",
+                "effects" : [
+                    {
+                        "type" : "damage",
+                        "value" : 1.3
+                    }
+                ]
+            },
+            {
+                "name" : "attaquez !!!!",
+                "effects" : [
+                    {
+                        "type" : "damage",
+                        "value" : 1.3
+                    }
+                ]
+            },
+            {
+                "name" : "attaquez !!!!",
+                "effects" : [
+                    {
+                        "type" : "damage",
+                        "value" : 1.3
+                    }
+                ]
+            },
+            {
+                "name" : "attaquez !!!!",
+                "effects" : [
+                    {
+                        "type" : "damage",
+                        "value" : 1.3
+                    }
+                ]
+            }
+        ],
         "squads" : [
             {
                 "name" : "squad1",
@@ -96,7 +134,7 @@
                     }
                 ]
             },
-                        {
+            {
                 "name" : "squad1",
                 "ships" : [
                     {
