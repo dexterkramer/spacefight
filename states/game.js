@@ -148,7 +148,7 @@ function attack(squad, target)
     squad.attack(target);
     if(target.canDefend())
     {
-        target.attack(squad);
+        target.defend(squad);
     }
     target.applyDamages();
     squad.applyDamages();
@@ -156,7 +156,9 @@ function attack(squad, target)
     target.updateLifeBar();
     squad.drawLifeBar(this.game);
     target.drawLifeBar(this.game);
+    squad.friendlyFire(target, this.game);
     drawAttack(squad, target);
+    target.defendAgainst.push(squad);
     squad.action = new action("attack", target);
     target.action = new action("defend", squad);
     return true;
@@ -187,10 +189,10 @@ function move(sprite)
         sprite.ref.movedFrom.pop();
         sprite.ref.applyMove();
     }
-    else if (sprite.ref.movesAllowed > 0)
+    else if (sprite.ref.fleat.player.movesAllowed > 0)
     {
         
-        sprite.ref.movesAllowed--;
+        sprite.ref.fleat.player.movesAllowed--;
         sprite.ref.movedFrom.push(sprite.ref.case);
         sprite.ref.applyMove();
     }
