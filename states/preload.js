@@ -56,6 +56,7 @@ function createPlayer(playerJson, number, availableCasePositioning)
 {
     var player = new onePlayer(playerJson.name, number, availableCasePositioning);
     player.fleat = createFleat(player, playerJson.fleat );
+    player.orders = createOrders(player, playerJson.orders);
     return player;
 }
 

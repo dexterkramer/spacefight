@@ -63,6 +63,7 @@ function nextTurn()
     }
     nextPlayer();
     this.game.turn.player.resetSquadsActions();
+    this.game.turn.player.drawOneorder();
     enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
 }
 

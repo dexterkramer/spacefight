@@ -6,7 +6,7 @@ var onePlayer = function(name, number, availableCasePositioning)
     this.number = number;
     this.availableCasePositioning = availableCasePositioning;
     this.movesAllowed = 1;
-    this.allOrders = [];
+    this.orders = [];
     this.availableOrders = [];
 };
 
@@ -38,5 +38,11 @@ onePlayer.prototype = {
             }
         });
         return squadPositioned;
+    },
+    drawOneorder : function()
+    {
+        let selectedOrderIndex = Math.floor(Math.random()*this.orders.length);
+        this.availableOrders.push(this.orders[selectedOrderIndex]);
+        this.orders.splice(selectedOrderIndex, 1);
     }
 };
