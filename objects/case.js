@@ -12,6 +12,7 @@ var oneCase = function(name,number,width,height){
     this.height = height;
     this.width = width;
     this.phaserObject = null;
+    this.overLapped = null;
 };
 
 oneCase.prototype = {
@@ -50,6 +51,7 @@ oneCase.prototype = {
     },
     BadOverLaped : function()
     {
+        this.phaserObject.clear();
         this.phaserObject.beginFill(0xDBDEE9);
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
@@ -57,6 +59,7 @@ oneCase.prototype = {
     },
     OverLaped : function()
     {
+        this.phaserObject.clear();
         this.phaserObject.beginFill(0xFEEC42);
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
@@ -64,13 +67,15 @@ oneCase.prototype = {
     },
     NotOverLaped : function()
     {
-        this.phaserObject.beginFill(0xFF0000);
+        this.phaserObject.clear();
+        //this.phaserObject.beginFill(0xFF0000);
         this.phaserObject.alpha= 0;
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
     },
     AttackOverLaped : function()
     {
+        this.phaserObject.clear();
         this.phaserObject.beginFill(0xFF0000);
         this.phaserObject.alpha= 1;
         this.phaserObject.drawPolygon(this.phaserObject.points);
@@ -78,8 +83,17 @@ oneCase.prototype = {
     },
     SupportOverLaped : function()
     {
+        this.phaserObject.clear();
         this.phaserObject.beginFill(0x4ED709);
         this.phaserObject.alpha= 1;
+        this.phaserObject.drawPolygon(this.phaserObject.points);
+        this.phaserObject.endFill();
+    },
+    FirendlyFireOverlaped : function()
+    {
+        this.phaserObject.alpha= 1;
+        this.phaserObject.clear();
+        this.phaserObject.beginFill(0xFF0000, 0.4);
         this.phaserObject.drawPolygon(this.phaserObject.points);
         this.phaserObject.endFill();
     }

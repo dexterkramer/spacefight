@@ -182,9 +182,10 @@ oneSquad.prototype = {
         }
         return false;
     },
-    friendlyFire : function(defendingSquad, game)
+    getFriendlyFire : function(defendingSquad)
     {
         var ref = this;
+        var toFriendlyFire = [];
         if(defendingSquad.defendAgainst.length > 0)
         {
             defendingSquad.defendAgainst.forEach(function(hasAttacked){
@@ -195,15 +196,23 @@ oneSquad.prototype = {
                 var plusThree = ((attackedFromFlankNumber + 3) > 6) ? attackedFromFlankNumber + 3 - 6: attackedFromFlankNumber + 3;
                 if(hasAttackedFromFlankNumber == plusOne || hasAttackedFromFlankNumber == lessOne)
                 {
-                    var modifiers = [];
-                    modifiers.push(createDamageModifier(0.2,1));
-                    ref.attack(hasAttacked, modifiers);
-                    hasAttacked.applyDamages();
-                    hasAttacked.updateLifeBar();
-                    hasAttacked.drawLifeBar(game);
+                    toFriendlyFire.push(hasAttacked);
                 }
             });
         }
+        return toFriendlyFire;
+    },
+    applyFriendlyFire : function(toFriendlyFire, game)
+    {
+        var ref = this;
+        toFriendlyFire.forEach(function(squad){
+            var modifiers = [];
+            modifiers.push(createDamageModifier(0.2,1));
+            ref.attack(squad, modifiers);
+            squad.applyDamages();
+            squad.updateLifeBar();
+            squad.drawLifeBar(game);
+        });
     },
     defend : function(defendingSquad, modifiers)
     {

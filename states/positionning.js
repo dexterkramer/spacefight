@@ -10,16 +10,15 @@ positionning.prototype = {
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
       },
     update : function(){
+        this.game.caseTable.forEach(function(oneCase){
+            oneCase.NotOverLaped();
+        });
         checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
     }
 }
 
 function OverLapPositioningDraggingManagment(squad, oldOverLapped)
 {
-    if(typeof oldOverLapped !== "undefined" && oldOverLapped !== null && oldOverLapped !== squad.overlapedCase )
-    {
-        oldOverLapped.NotOverLaped();
-    }
     if(squad.overlapedCase !== null && squad.overlapedCase.squad !== null && squad.overlapedCase.squad !== squad)
     {
         squad.overlapedCase.BadOverLaped();

@@ -11,16 +11,15 @@ TheGame.prototype = {
         button = game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
       },
     update : function(){
+        this.game.caseTable.forEach(function(oneCase){
+            oneCase.NotOverLaped();
+        });
         checkOverLap(this.game.turn.player,this.game.caseTable, OverLapGamingDraggingManagment);
     }
 }
 
 function OverLapGamingDraggingManagment(squad, oldOverLapped)
 {
-    if(typeof oldOverLapped !== "undefined" && oldOverLapped !== null && oldOverLapped !== squad.overlapedCase )
-    {
-        oldOverLapped.NotOverLaped();
-    }
     if(squad.overlapedCase !== null)
     {
         if(squad.canGo(squad.overlapedCase))
@@ -29,6 +28,10 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
             {
                 if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
                 {
+                    var toFriendlyFires = squad.getFriendlyFire(squad.overlapedCase.squad);
+                    toFriendlyFires.forEach(function(toFriendlyFire) {
+                        toFriendlyFire.case.FirendlyFireOverlaped();
+                    });
                     squad.overlapedCase.AttackOverLaped();
                 }
                 else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
@@ -38,7 +41,7 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
             }
             else
             {
-                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
+                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.fleat.player.movesAllowed > 0)
                 {  
                     squad.overlapedCase.OverLaped();
                 }
@@ -70,7 +73,6 @@ function stopDragSquadGaming(sprite, pointer)
     // has the squad been dragged on a case ?
     if(sprite.ref.overlapedCase !== null && sprite.ref.canGo(sprite.ref.overlapedCase))
     {
-        sprite.ref.overlapedCase.NotOverLaped();
         // does the case already coutain an squad ?
         if(sprite.ref.overlapedCase.squad == null)
         {
@@ -156,7 +158,8 @@ function attack(squad, target)
     target.updateLifeBar();
     squad.drawLifeBar(this.game);
     target.drawLifeBar(this.game);
-    squad.friendlyFire(target, this.game);
+    var toFriendlyFires = squad.getFriendlyFire(target);
+    squad.applyFriendlyFire(toFriendlyFires, this.game);
     drawAttack(squad, target);
     target.defendAgainst.push(squad);
     squad.action = new action("attack", target);
@@ -186,6 +189,7 @@ function move(sprite)
             sprite.ref.case.squad = null;
         }
         sprite.ref.movesAllowed = sprite.ref.movesAllowed + 1;
+        sprite.ref.fleat.player.movesAllowed = sprite.ref.fleat.player.movesAllowed + 1;
         sprite.ref.movedFrom.pop();
         sprite.ref.applyMove();
     }
