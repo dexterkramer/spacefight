@@ -88,6 +88,7 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
+                tempAttack(sprite.ref, sprite.ref.overlapedCase.squad);
                 if(attack(sprite.ref, sprite.ref.overlapedCase.squad))
                 {
                    sprite.ref.disableDrag();
@@ -126,6 +127,19 @@ function support(squad, target)
     return true;
 }
 
+function tempAttack(squad, target)
+{
+    // don't move the squad to the case (attack the ennemy squad instead)
+    if(squad.case !== null)
+    {
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
+    }
+
+    squad.tempAction = new action("attack", target);
+    drawAttack(squad, target);
+}
+
 function attack(squad, target)
 {
     // don't move the squad to the case (attack the ennemy squad instead)
@@ -161,7 +175,7 @@ function attack(squad, target)
     target.drawLifeBar(this.game);
     var toFriendlyFires = squad.getFriendlyFire(target);
     squad.applyFriendlyFire(toFriendlyFires, this.game);
-    drawAttack(squad, target);
+    //drawAttack(squad, target);
     target.defendAgainst.push(squad);
     squad.action = new action("attack", target);
     target.action = new action("defend", squad);
@@ -170,15 +184,20 @@ function attack(squad, target)
 
 function drawAttack(squad, squad2)
 {
-    /*
+    
+    //console.log(squad.case.phaserObject.middleX, squad.phaserObject.x);
     var distance = Phaser.Math.distance(squad.phaserObject.x, squad.phaserObject.y, squad2.phaserObject.x, squad2.phaserObject.y );
     var angle = game.physics.arcade.angleBetween(squad.phaserObject, squad2.phaserObject);
     var arrow = this.game.add.sprite(squad.phaserObject.x  , squad.phaserObject.y  , 'red-arrow');
-    arrow.scale.setTo(distance / arrow.width,  100 /  arrow.height);
-    arrow.pivot.x = arrow.width * .5;arrow.pivot.y = arrow.height * .5;
+    arrow.scale.setTo(distance / arrow.width,  50 /  arrow.height);
+    arrow.anchor.x = 0;
+    arrow.anchor.y = 0.5;
+    //arrow.pivot.x = 0; arrow.pivot.y = arrow.height * .5;
     arrow.rotation = angle;
-    arrow.x = arrow.x + ((arrow.width)  * (Math.cos(angle)/ Math.sin(angle))); 
-    arrow.y = arrow.y + ((arrow.height)  * (Math.cos(angle)/ Math.sin(angle)));*/
+    arrow.alpha = 0.5;
+    squad.tempAction.phaserObject = arrow;
+    //arrow.x = arrow.x + ((arrow.width)  * (Math.cos(angle)/ Math.sin(angle))); 
+    //arrow.y = arrow.y + ((arrow.height)  * (Math.cos(angle)/ Math.sin(angle)));
 }
 
 function move(sprite)
