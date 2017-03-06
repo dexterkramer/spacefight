@@ -159,7 +159,7 @@ oneSquad.prototype = {
     },
     calcultateFlankingBonus : function(defendingSquad)
     {
-        if(defendingSquad.defendAgainst.length > 0)
+        if(defendingSquad.defendAgainst.length > 0 && defendingSquad.defendAgainst[0] != this)
         {
             var firstToAttack = defendingSquad.defendAgainst[0];
             var firstToAttackFromFlankNumber = defendingSquad.canGo(firstToAttack.case);
@@ -193,7 +193,7 @@ oneSquad.prototype = {
                 var attackedFromFlankNumber = defendingSquad.canGo(ref.case);
                 var plusOne = (attackedFromFlankNumber == 6) ? 1 : attackedFromFlankNumber + 1;
                 var lessOne = (attackedFromFlankNumber == 1) ? 6 : attackedFromFlankNumber - 1;
-                var plusThree = ((attackedFromFlankNumber + 3) > 6) ? attackedFromFlankNumber + 3 - 6: attackedFromFlankNumber + 3;
+                //var plusThree = ((attackedFromFlankNumber + 3) > 6) ? attackedFromFlankNumber + 3 - 6: attackedFromFlankNumber + 3;
                 if(hasAttackedFromFlankNumber == plusOne || hasAttackedFromFlankNumber == lessOne)
                 {
                     toFriendlyFire.push(hasAttacked);
@@ -220,7 +220,7 @@ oneSquad.prototype = {
         if(typeof modifiers != "undefined" && modifiers != null)
         {
             modifiers.forEach(function(modifier){
-                if(typeof modifiers == "AttackModifier")
+                if(modifier.type == "AttackModifier")
                 {
                     attackingModifierArrayTmp.push(modifier);
                 }
@@ -266,17 +266,13 @@ oneSquad.prototype = {
         if(typeof modifiers != "undefined" && modifiers != null)
         {
             modifiers.forEach(function(modifier){
-                if(typeof modifiers == "AttackModifier")
+                if(modifier.type == "AttackModifier")
                 {
                     attackingModifierArrayTmp.push(modifier);
                 }
             });
         }
-        var flankBonus = this.calcultateFlankingBonus(defendingSquad);
-        if(flankBonus)
-        {
-            attackingModifierArrayTmp.push(flankBonus);
-        }
+        
         var attackingShipArray = this.getAvailableShips();
         var defendingShipArray = defendingSquad.getAvailableShips();
         var shipGroups = [];
@@ -310,7 +306,7 @@ oneSquad.prototype = {
                 });
             }
         });
-        ref.movesAllowed = 0;
+        //ref.movesAllowed = 0;
     },
     disableDrag : function()
     {
