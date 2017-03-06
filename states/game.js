@@ -52,6 +52,8 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
 
 function nextTurn()
 {
+    applyActions();
+    doFights();
     if(this.game.turn.player !== null)
     {
         disableDragingFroPlayer(this.game.turn.player);
@@ -67,6 +69,44 @@ function nextTurn()
     enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
 }
 
+function refreshAction(squad)
+{
+    var toSlice = [];
+    squad.defendAgainst.forEach(function(attackingSquad, index){
+        attackingSquad.action.phaserObject.destroy();
+        if(attackingSquad.canGo(squad.case))
+        {
+            drawAttack(attackingSquad, squad);
+        }
+        else
+        {
+            toSlice.push(index);
+            attackingSquad.action = null;
+        }
+    });
+
+    toSlice.forEach(function(indexToslice){
+        squad.defendAgainst.splice(indexToslice, 1);
+    });
+
+    if(squad.action != null)
+    {
+        squad.action.phaserObject.destroy();
+        if(squad.canGo(squad.action.target.case))
+        {
+            drawAttack(squad, squad.action.target);
+        }
+        else
+        {
+            squad.action.target.defendAgainst.splice(squad.action.target.defendAgainst.findIndex(function(elem){
+                return elem == squad;
+            }),1);
+            squad.action = null;
+        }
+    }
+
+}
+
 function stopDragSquadGaming(sprite, pointer)
 {
     sprite.body.moves = false;
@@ -78,7 +118,10 @@ function stopDragSquadGaming(sprite, pointer)
         if(sprite.ref.overlapedCase.squad == null)
         {
             // if the squad is alreay on another case, remove it from the case.
-            move(sprite);
+            if(move(sprite))
+            {
+                refreshAction(sprite.ref);
+            }
         }
         else
         {
@@ -88,10 +131,7 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                if(attack(sprite.ref, sprite.ref.overlapedCase.squad))
-                {
-                   sprite.ref.disableDrag();
-                }
+                tempAttack(sprite.ref, sprite.ref.overlapedCase.squad);
             }
         }
     }
@@ -126,7 +166,7 @@ function support(squad, target)
     return true;
 }
 
-function attack(squad, target)
+function tempAttack(squad, target)
 {
     // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
@@ -134,51 +174,80 @@ function attack(squad, target)
         squad.phaserObject.x = squad.case.phaserObject.middleX;
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
-
-    // stop if the squad have already made an action this turn
-    if(squad.action != null)
+    if( squad.action != null &&  squad.action.phaserObject != null )
     {
-        if(squad.action.type == "attack")
-        {
-            return false;
-        }
+        squad.action.phaserObject.destroy();
     }
-
-    // the defending squad will respond to the attacking squad with his available ships 
-    // before the damages are applied
-    squad.initFinalArmor();
-    target.initFinalArmor();
-    squad.attack(target);
-    if(target.canDefend())
-    {
-        target.defend(squad);
-    }
-    target.applyDamages();
-    squad.applyDamages();
-    squad.updateLifeBar();
-    target.updateLifeBar();
-    squad.drawLifeBar(this.game);
-    target.drawLifeBar(this.game);
-    var toFriendlyFires = squad.getFriendlyFire(target);
-    squad.applyFriendlyFire(toFriendlyFires, this.game);
-    drawAttack(squad, target);
-    target.defendAgainst.push(squad);
     squad.action = new action("attack", target);
-    target.action = new action("defend", squad);
-    return true;
+    drawAttack(squad, target);
+    if(target.defendAgainst.length == 0)
+    {
+        target.action = new action("defend", squad);
+        drawAttack(target, squad);
+        squad.defendAgainst.push(target);
+    }
+    target.defendAgainst.push(squad);
+}
+
+
+function applyActions()
+{
+    /*this.game.players.forEach(function(player){
+        player.fleat.squads.forEach(function(squad){
+            if(squad.tempAction.type != squad.action.type && squad.action.target != squad.tempAction.target )
+            {
+                squad.action = squad.tempAction;
+            }
+
+        });
+    });*/
+}
+
+function doFights()
+{
+    this.game.players.forEach(function(player){
+        player.fleat.squads.forEach(function(squad){
+            if(squad.action != null && squad.action.type == "attack")
+            {   
+                var target = squad.action.target;
+                squad.initFinalArmor();
+                target.initFinalArmor();
+                var modifiers = [];
+                var flankBonus = squad.calcultateFlankingBonus(target);
+                if(flankBonus)
+                {
+                    modifiers.push(flankBonus);
+                }
+                
+                squad.attack(target, modifiers);
+                if(target.action.type == "defend" && target.action.target == squad)
+                {
+                    target.attack(squad, []);
+                }
+                target.applyDamages();
+                squad.applyDamages();
+                squad.updateLifeBar();
+                target.updateLifeBar();
+                squad.drawLifeBar(this.game);
+                target.drawLifeBar(this.game);
+                var toFriendlyFires = squad.getFriendlyFire(target);
+                squad.applyFriendlyFire(toFriendlyFires, this.game);
+            }
+        });
+    });
 }
 
 function drawAttack(squad, squad2)
 {
-    /*
     var distance = Phaser.Math.distance(squad.phaserObject.x, squad.phaserObject.y, squad2.phaserObject.x, squad2.phaserObject.y );
     var angle = game.physics.arcade.angleBetween(squad.phaserObject, squad2.phaserObject);
     var arrow = this.game.add.sprite(squad.phaserObject.x  , squad.phaserObject.y  , 'red-arrow');
-    arrow.scale.setTo(distance / arrow.width,  100 /  arrow.height);
-    arrow.pivot.x = arrow.width * .5;arrow.pivot.y = arrow.height * .5;
+    arrow.scale.setTo(distance / arrow.width,  50 /  arrow.height);
+    arrow.anchor.x = 0;
+    arrow.anchor.y = 0.5;
     arrow.rotation = angle;
-    arrow.x = arrow.x + ((arrow.width)  * (Math.cos(angle)/ Math.sin(angle))); 
-    arrow.y = arrow.y + ((arrow.height)  * (Math.cos(angle)/ Math.sin(angle)));*/
+    arrow.alpha = 0.5;
+    squad.action.phaserObject = arrow;
 }
 
 function move(sprite)
@@ -193,6 +262,7 @@ function move(sprite)
         sprite.ref.fleat.player.movesAllowed = sprite.ref.fleat.player.movesAllowed + 1;
         sprite.ref.movedFrom.pop();
         sprite.ref.applyMove();
+        return true;
     }
     else if (sprite.ref.fleat.player.movesAllowed > 0)
     {
@@ -200,6 +270,7 @@ function move(sprite)
         sprite.ref.fleat.player.movesAllowed--;
         sprite.ref.movedFrom.push(sprite.ref.case);
         sprite.ref.applyMove();
+        return true;
     }
     else
     {
@@ -209,5 +280,5 @@ function move(sprite)
             sprite.y = sprite.ref.case.phaserObject.middleY;
         }
     }
-    console.log('move');
+    return false;
 }

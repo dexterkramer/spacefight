@@ -17,9 +17,9 @@ onePlayer.prototype = {
         this.fleat.squads.forEach(function(squad){
             squad.movesAllowed = 1;
             squad.tempAction = null;
-            squad.action = null;
+            //squad.action = null;
             squad.movedFrom = [];
-            squad.defendAgainst = [];
+            //squad.defendAgainst = [];
         });
     },
     resetEffects : function()
