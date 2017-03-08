@@ -5,6 +5,7 @@ TheGame.prototype = {
   	create: function(){
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.turn.number = 0;
+        this.game.battles = [];
         drawCases(this.game);
         drawAllSquads();
         nextTurn();
@@ -17,6 +18,33 @@ TheGame.prototype = {
         checkOverLap(this.game.turn.player,this.game.caseTable, OverLapGamingDraggingManagment);
     }
 }
+
+//////////////////////////////////////////////////////////////////
+////////////////////////// GAME MECHANICS ////////////////////////
+//////////////////////////////////////////////////////////////////
+
+function nextTurn()
+{
+    //applyActions();
+    doFights();
+    if(this.game.turn.player !== null)
+    {
+        disableDragingFroPlayer(this.game.turn.player);
+    }
+    this.game.turn.number++;
+    if(this.game.turn.player != null)
+    {
+        this.game.turn.player.resetEffects();
+    }
+    nextPlayer();
+    this.game.turn.player.resetSquadsActions();
+    this.game.turn.player.drawOneorder();
+    enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
+}
+
+///////////////////////////////////////////////////////////
+///////////////////// DRAG AND OVERLAP ////////////////////
+///////////////////////////////////////////////////////////
 
 function OverLapGamingDraggingManagment(squad, oldOverLapped)
 {
@@ -48,63 +76,6 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
             }
         }
     }
-}
-
-function nextTurn()
-{
-    applyActions();
-    doFights();
-    if(this.game.turn.player !== null)
-    {
-        disableDragingFroPlayer(this.game.turn.player);
-    }
-    this.game.turn.number++;
-    if(this.game.turn.player != null)
-    {
-        this.game.turn.player.resetEffects();
-    }
-    nextPlayer();
-    this.game.turn.player.resetSquadsActions();
-    this.game.turn.player.drawOneorder();
-    enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
-}
-
-function refreshAction(squad)
-{
-    var toSlice = [];
-    squad.defendAgainst.forEach(function(attackingSquad, index){
-        attackingSquad.action.phaserObject.destroy();
-        if(attackingSquad.canGo(squad.case))
-        {
-            drawAttack(attackingSquad, squad);
-        }
-        else
-        {
-            toSlice.push(index);
-            attackingSquad.action = null;
-        }
-    });
-
-    toSlice.forEach(function(indexToslice){
-        squad.defendAgainst.splice(indexToslice, 1);
-    });
-
-    if(squad.action != null)
-    {
-        squad.action.phaserObject.destroy();
-        if(squad.canGo(squad.action.target.case))
-        {
-            drawAttack(squad, squad.action.target);
-        }
-        else
-        {
-            squad.action.target.defendAgainst.splice(squad.action.target.defendAgainst.findIndex(function(elem){
-                return elem == squad;
-            }),1);
-            squad.action = null;
-        }
-    }
-
 }
 
 function stopDragSquadGaming(sprite, pointer)
@@ -143,28 +114,9 @@ function stopDragSquadGaming(sprite, pointer)
     }
 }
 
-function support(squad, target)
-{
-    // go here if the squad is moved to a case already countaining a fleet.
-    // if the esouade had already a case : get back to the previous case.
-    if(squad.case !== null)
-    {
-        squad.phaserObject.x = squad.case.phaserObject.middleX;
-        squad.phaserObject.y = squad.case.phaserObject.middleY;
-    }
-
-    // stop if the squad have already made an action this turn
-    if(squad.action != null)
-    {
-        return false;
-    }
-    
-    squad.support(target);
-    target.updateLifeBar();
-    target.drawLifeBar(this.game);
-    squad.action = new action("support", target);
-    return true;
-}
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////// ATTACK ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 function tempAttack(squad, target)
 {
@@ -174,81 +126,102 @@ function tempAttack(squad, target)
         squad.phaserObject.x = squad.case.phaserObject.middleX;
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
-    if( squad.action != null &&  squad.action.phaserObject != null )
+    
+    var existingAttack = findBattle(squad);
+
+    if(existingAttack)
     {
-        squad.action.phaserObject.destroy();
+        removeBattle(existingAttack);
     }
-    squad.action = new action("attack", target);
-    drawAttack(squad, target);
-    if(target.defendAgainst.length == 0)
+
+    var defendingAgainst = getDefendingAgainst(target);
+    squad.action = addBattle(squad, target);
+    drawAttack(squad.action);
+
+    if(defendingAgainst.length == 0)
     {
-        target.action = new action("defend", squad);
-        drawAttack(target, squad);
-        squad.defendAgainst.push(target);
+        target.action = addBattle(target, squad);
+        drawAttack(target.action);
     }
-    target.defendAgainst.push(squad);
 }
 
-
-function applyActions()
+function getDefendingAgainst(defendingSquad)
 {
-    /*this.game.players.forEach(function(player){
-        player.fleat.squads.forEach(function(squad){
-            if(squad.tempAction.type != squad.action.type && squad.action.target != squad.tempAction.target )
-            {
-                squad.action = squad.tempAction;
-            }
+    var defendingAgainst = [];
+    this.game.battles.forEach(function(battle){
+        if(battle.target == defendingSquad)
+        {
+            defendingAgainst.push(battle);
+        }
+    });
+    return defendingAgainst;
+}
 
-        });
-    });*/
+function addBattle(attackingSquad, target)
+{
+    var theBattle = createBattle(attackingSquad, target);
+    this.game.battles.push(theBattle);
+    return theBattle;
+}
+
+function removeBattle(battle)
+{
+    if(battle.arrowPhaserObject != null)
+    {
+        battle.arrowPhaserObject.destroy();
+    }
+    this.game.battles.splice(this.game.battles.findIndex(function(elem){
+        return elem == battle;
+    }),1);
+}
+
+function findBattle(attackingSquad)
+{
+    var index = this.game.battles.findIndex(function(elem){
+        return elem.attackingSquad == attackingSquad;
+    });
+    if(typeof index == "undefined" || index == null || index == -1)
+    {
+        return false;
+    }
+    return this.game.battles[index];
+}
+
+function isDefendingAgainst(defendingSquad, attackingSquad)
+{
+    defendingBattle = findBattle(defendingSquad);
+    if(defendingBattle && defendingBattle.target == attackingSquad)
+    {
+        return defendingBattle;
+    }
+    return false;
 }
 
 function doFights()
 {
-    this.game.players.forEach(function(player){
-        player.fleat.squads.forEach(function(squad){
-            if(squad.action != null && squad.action.type == "attack")
-            {   
-                var target = squad.action.target;
-                squad.initFinalArmor();
-                target.initFinalArmor();
-                var modifiers = [];
-                var flankBonus = squad.calcultateFlankingBonus(target);
-                if(flankBonus)
-                {
-                    modifiers.push(flankBonus);
-                }
-                
-                squad.attack(target, modifiers);
-                if(target.action.type == "defend" && target.action.target == squad)
-                {
-                    target.attack(squad, []);
-                }
-                target.applyDamages();
-                squad.applyDamages();
-                squad.updateLifeBar();
-                target.updateLifeBar();
-                squad.drawLifeBar(this.game);
-                target.drawLifeBar(this.game);
-                var toFriendlyFires = squad.getFriendlyFire(target);
-                squad.applyFriendlyFire(toFriendlyFires, this.game);
-            }
-        });
+    var actualTurn = this.game.turn.number;
+    this.game.battles.forEach(function(battle){
+        battle.process(this.game);
     });
 }
 
-function drawAttack(squad, squad2)
+function drawAttack(battle)
 {
-    var distance = Phaser.Math.distance(squad.phaserObject.x, squad.phaserObject.y, squad2.phaserObject.x, squad2.phaserObject.y );
-    var angle = game.physics.arcade.angleBetween(squad.phaserObject, squad2.phaserObject);
-    var arrow = this.game.add.sprite(squad.phaserObject.x  , squad.phaserObject.y  , 'red-arrow');
+    var distance = Phaser.Math.distance(battle.attackingSquad.phaserObject.x, battle.attackingSquad.phaserObject.y, battle.target.phaserObject.x, battle.target.phaserObject.y );
+    var angle = game.physics.arcade.angleBetween(battle.attackingSquad.phaserObject, battle.target.phaserObject);
+    var arrow = this.game.add.sprite(battle.attackingSquad.phaserObject.x  , battle.attackingSquad.phaserObject.y  , 'red-arrow');
     arrow.scale.setTo(distance / arrow.width,  50 /  arrow.height);
     arrow.anchor.x = 0;
     arrow.anchor.y = 0.5;
     arrow.rotation = angle;
     arrow.alpha = 0.5;
-    squad.action.phaserObject = arrow;
+    battle.arrowPhaserObject = arrow;
 }
+
+
+////////////////////////////////////////////
+///////////////// MOVE /////////////////////
+////////////////////////////////////////////
 
 function move(sprite)
 {
@@ -281,4 +254,64 @@ function move(sprite)
         }
     }
     return false;
+}
+
+function refreshAction(squad)
+{
+    var toSlice = [];
+    var defendingAgainst = getDefendingAgainst(squad);
+    defendingAgainst.forEach(function(battle, index){
+        battle.arrowPhaserObject.destroy();
+        if(battle.attackingSquad.canGo(squad.case))
+        {
+            drawAttack(battle.attackingSquad.action);
+        }
+        else
+        {
+            removeBattle(battle);
+            battle.attackingSquad.action = null;
+        }
+    });
+
+    if(squad.action != null)
+    {
+        squad.action.arrowPhaserObject.destroy();
+        if(squad.canGo(squad.action.target.case))
+        {
+            drawAttack(squad.action);
+        }
+        else
+        {
+            removeBattle(squad.action);
+            squad.action.target.action = null;
+            squad.action = null;
+        }
+    }
+}
+
+////////////////////////////////////////////
+///////////////// SUPPORT //////////////////
+////////////////////////////////////////////
+
+function support(squad, target)
+{
+    // go here if the squad is moved to a case already countaining a fleet.
+    // if the esouade had already a case : get back to the previous case.
+    if(squad.case !== null)
+    {
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
+    }
+
+    // stop if the squad have already made an action this turn
+    if(squad.action != null)
+    {
+        return false;
+    }
+    
+    squad.support(target);
+    target.updateLifeBar();
+    target.drawLifeBar(this.game);
+    squad.action = new action("support", target);
+    return true;
 }

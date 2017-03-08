@@ -53,7 +53,7 @@ oneSquad.prototype = {
             this.lifeBar.textObject.destroy();
         }
         var lifeBar = game.add.graphics(lifeBarX, lifeBarY);
-        var percent = this.lifeBar.armor / this.lifeBar.startArmor; 
+        var percent = this.lifeBar.armor / this.lifeBar.maxArmor; 
         lifeBar.lineStyle(lifeBarHeight, getLifeBarColor(percent));
         lifeBar.lineTo(lifebarWidth * percent, 0);
         this.phaserObject.addChild(lifeBar);
@@ -106,6 +106,7 @@ oneSquad.prototype = {
         this.ships.forEach(function(ship){
             ship.lifeBar.armor = ship.lifeBar.finalArmor;
         });
+        
     },
     initFinalArmor : function()
     {
@@ -159,9 +160,11 @@ oneSquad.prototype = {
     },
     calcultateFlankingBonus : function(defendingSquad)
     {
-        if(defendingSquad.defendAgainst.length > 0 && defendingSquad.defendAgainst[0] != this)
+        var defendingAgainst = getDefendingAgainst(defendingSquad);
+
+        if(defendingAgainst.length > 0 && defendingAgainst[0].attackingSquad != this)
         {
-            var firstToAttack = defendingSquad.defendAgainst[0];
+            var firstToAttack = defendingAgainst[0].attackingSquad;
             var firstToAttackFromFlankNumber = defendingSquad.canGo(firstToAttack.case);
             var attackedFromFlankNumber = defendingSquad.canGo(this.case);
             var plusOne = (attackedFromFlankNumber == 6) ? 1 : attackedFromFlankNumber + 1;
@@ -177,7 +180,7 @@ oneSquad.prototype = {
             }
             else
             {
-                return createDamageModifier(2,1);
+                return createDamageModifier(1.5,1);
             }
         }
         return false;
@@ -186,17 +189,17 @@ oneSquad.prototype = {
     {
         var ref = this;
         var toFriendlyFire = [];
-        if(defendingSquad.defendAgainst.length > 0)
+        var defendingAgainst = getDefendingAgainst(defendingSquad);
+        if(defendingAgainst.length > 0)
         {
-            defendingSquad.defendAgainst.forEach(function(hasAttacked){
-                var hasAttackedFromFlankNumber = defendingSquad.canGo(hasAttacked.case);
+            defendingAgainst.forEach(function(battle){
+                var hasAttackedFromFlankNumber = defendingSquad.canGo(battle.attackingSquad.case);
                 var attackedFromFlankNumber = defendingSquad.canGo(ref.case);
                 var plusOne = (attackedFromFlankNumber == 6) ? 1 : attackedFromFlankNumber + 1;
                 var lessOne = (attackedFromFlankNumber == 1) ? 6 : attackedFromFlankNumber - 1;
-                //var plusThree = ((attackedFromFlankNumber + 3) > 6) ? attackedFromFlankNumber + 3 - 6: attackedFromFlankNumber + 3;
                 if(hasAttackedFromFlankNumber == plusOne || hasAttackedFromFlankNumber == lessOne)
                 {
-                    toFriendlyFire.push(hasAttacked);
+                    toFriendlyFire.push(battle.attackingSquad);
                 }
             });
         }

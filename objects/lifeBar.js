@@ -1,13 +1,14 @@
 var lifeBar = function(armor, shield, maxArmor)
 {
-    this.startArmor = armor;
+    //this.startArmor = armor;
     this.armor = armor;
     this.startShielf = shield;
     this.shield = shield;
     this.phaserObject = null;
     this.textObject = null;
-    this.tempArmor = 0;
+    this.tempArmor = armor;
     this.maxArmor = maxArmor;
+    this.finalArmor = armor;
 }
 
 lifeBar.prototype = {
