@@ -69,7 +69,7 @@ function OverLapGamingDraggingManagment(squad, oldOverLapped)
             }
             else
             {
-                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.fleat.player.movesAllowed > 0)
+                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
                 {  
                     squad.overlapedCase.OverLaped();
                 }
@@ -126,7 +126,14 @@ function tempAttack(squad, target)
         squad.phaserObject.x = squad.case.phaserObject.middleX;
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
-    
+
+    var defendingAgainst = getDefendingAgainst(target);
+    if(defendingAgainst.length == 0)
+    {
+        target.action = addBattle(target, squad);
+        drawAttack(target.action);
+    }
+
     var existingAttack = findBattle(squad);
 
     if(existingAttack)
@@ -134,15 +141,8 @@ function tempAttack(squad, target)
         removeBattle(existingAttack);
     }
 
-    var defendingAgainst = getDefendingAgainst(target);
     squad.action = addBattle(squad, target);
     drawAttack(squad.action);
-
-    if(defendingAgainst.length == 0)
-    {
-        target.action = addBattle(target, squad);
-        drawAttack(target.action);
-    }
 }
 
 function getDefendingAgainst(defendingSquad)
@@ -232,15 +232,14 @@ function move(sprite)
             sprite.ref.case.squad = null;
         }
         sprite.ref.movesAllowed = sprite.ref.movesAllowed + 1;
-        sprite.ref.fleat.player.movesAllowed = sprite.ref.fleat.player.movesAllowed + 1;
         sprite.ref.movedFrom.pop();
         sprite.ref.applyMove();
         return true;
     }
-    else if (sprite.ref.fleat.player.movesAllowed > 0)
+    else if (sprite.ref.movesAllowed > 0)
     {
         
-        sprite.ref.fleat.player.movesAllowed--;
+        sprite.ref.movesAllowed--;
         sprite.ref.movedFrom.push(sprite.ref.case);
         sprite.ref.applyMove();
         return true;
