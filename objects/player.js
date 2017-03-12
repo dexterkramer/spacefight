@@ -30,14 +30,9 @@ onePlayer.prototype = {
     },
     okToFinishPositioning : function()
     {
-        var squadPositioned = true;
-        this.fleat.squads.forEach(function(squad){
-            if(squad.case == null)
-            {
-                squadPositioned = false;
-            }
-        });
-        return squadPositioned;
+        if(this.fleat.capitalShip.case == null)
+            return false;
+        return true;
     },
     drawOneorder : function()
     {

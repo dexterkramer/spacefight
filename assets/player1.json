@@ -40,6 +40,19 @@
     ],
     "fleat" : {
         "name" : "maSuperFlote",
+        "capitalShip" : {
+            "name" : "capitalShipSquad",
+            "ships" : [
+                {
+                    "name" : "tresgros",
+                    "firePower" : 100,
+                    "shield" : 100,
+                    "support" : 20,
+                    "maxArmor" : 800,
+                    "armor" : 800
+                }
+            ]
+        },
         "squads" : [
             {
                 "name" : "squad1player1",
@@ -49,179 +62,6 @@
                         "firePower" : 50,
                         "support" : 20,
                         "shield" : 100,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    }
-                ]
-            },
-                       {
-                "name" : "squad2player1",
-                "ships" : [
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
-                        "maxArmor" : 400,
-                        "armor" : 400
-                    },
-                    {
-                        "name" : "gros",
-                        "firePower" : 50,
-                        "shield" : 100,
-                        "support" : 20,
                         "maxArmor" : 400,
                         "armor" : 400
                     }

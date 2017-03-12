@@ -12,6 +12,7 @@ var oneSquad = function(name, fleat)
     this.movedFrom = [];
     this.tempAction = null;
     this.attackModifiersArray = [];
+    this.isDragged = false;
 };
 
 oneSquad.prototype = {
