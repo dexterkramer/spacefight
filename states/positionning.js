@@ -4,16 +4,18 @@ var positionning = function(game){
 positionning.prototype = {
   	create: function(){
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
+        squadsGroup = this.game.add.group();
+        cardsGroup = this.game.add.group();
         drawCases(this.game);
-        //nextPlayer(false);
-        //positioningTurnInit(this.game.turn.player);
-        //button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
+        nextPlayer(this.game, false);
+        positioningTurnInit(this.game.turn.player);
+        button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
       },
     update : function(){
-        /*this.game.caseTable.forEach(function(oneCase){
+        this.game.caseTable.forEach(function(oneCase){
             oneCase.NotOverLaped();
         });
-        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);*/
+        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
     }
 }
 
@@ -44,7 +46,7 @@ function actionOnClick()
     if(this.game.turn.player.okToFinishPositioning())
     {
         disableDragingFroPlayer(this.game.turn.player); 
-        nextPlayer(false);
+        nextPlayer(this.game, false);
         if(this.game.turn.player !== null)
         {
             positioningTurnInit(this.game.turn.player);
@@ -72,6 +74,8 @@ function positioningPlayer(player)
         XposSquad = XposSquad + 100;
     });
 */
-    drawPlayerSquads(player);
-    enableDrag(player, dragSquad, stopDragSquad);
+    player.fleat.deploySquad(this.game, player.fleat.capitalShip);
+    //drawSquad(player.fleat.capitalShip);
+    //drawPlayerSquads(player);
+    //enableDrag(player, dragSquad, stopDragSquad);
 }

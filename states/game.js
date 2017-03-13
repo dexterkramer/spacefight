@@ -7,9 +7,9 @@ TheGame.prototype = {
         this.game.turn.number = 0;
         this.game.battles = [];
         drawCases(this.game);
-        drawAllSquads();
-        nextTurn();
-        button = game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
+        drawAllSquads(this.game);
+        nextTurn(this.game);
+        button = this.game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
       },
     update : function(){
         this.game.caseTable.forEach(function(oneCase){
@@ -36,10 +36,10 @@ function nextTurn()
     {
         this.game.turn.player.resetEffects();
     }
-    nextPlayer();
+    nextPlayer(this.game);
     this.game.turn.player.resetSquadsActions();
-    this.game.turn.player.drawOneorder();
-    enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
+    this.game.turn.player.drawOneCard();
+    enableDrag(game.turn.player, dragSquad, stopDragSquadGaming);
 }
 
 ///////////////////////////////////////////////////////////

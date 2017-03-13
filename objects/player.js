@@ -8,9 +8,16 @@ var onePlayer = function(name, number, availableCasePositioning)
     this.movesAllowed = 1;
     this.orders = [];
     this.availableOrders = [];
+    this.cardHandlers = [];
+    this.pick = [];
+    this.createHandler();
 };
 
 onePlayer.prototype = {
+    createPick : function()
+    {
+        this.pick = createPick(this);
+    },
     resetSquadsActions : function()
     {
         this.movesAllowed = 1;
@@ -34,10 +41,23 @@ onePlayer.prototype = {
             return false;
         return true;
     },
-    drawOneorder : function()
+    drawOneCard : function()
     {
+        var card = this.pick.drawOne();
+        var index = this.cardHandlers.findIndex(function(elem){
+            return elem.card == null;
+        });
+        var choosenHandler = this.cardHandlers[index];
+        card.setHandler(choosenHandler);
+        choosenHandler.addCard(card);
+        card.drawCard();
+/*
         let selectedOrderIndex = Math.floor(Math.random()*this.orders.length);
         this.availableOrders.push(this.orders[selectedOrderIndex]);
-        this.orders.splice(selectedOrderIndex, 1);
+        this.orders.splice(selectedOrderIndex, 1);*/
+    },
+    createHandler : function()
+    {
+        this.cardHandlers = createHandlers(this);
     }
 };

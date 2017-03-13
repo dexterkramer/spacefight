@@ -15,6 +15,8 @@ preload.prototype = {
         game.load.image('space', 'assets/deep-space.jpg');
         game.load.image('attackOverLaped', 'assets/attackOverLaped.png');
         game.load.image('red-arrow', 'assets/red-arrow.png');
+        game.load.image('card', 'assets/card.jpg');
+        
 	},
   	create: function(){
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
