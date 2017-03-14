@@ -27,7 +27,8 @@ TheGame.prototype = {
 function nextTurn()
 {
     //applyActions();
-    doFights();
+    //doFights();
+    this.game.battles = [];
     if(this.game.turn.player !== null)
     {
         disableDragingFroPlayer(this.game.turn.player);
@@ -69,6 +70,7 @@ function stopDragCard(sprite, pointer)
                 card.overlapedCase.squad = card.object;
                 card.object.case = card.overlapedCase;
                 card.object.fleat.deploySquad(card.object);
+                enableDragSquad(card.object, dragSquad, stopDragSquadGaming);
                 card.destroy();
             }
         }
@@ -124,31 +126,6 @@ function OverLapGamingCardDraggingManagment(card)
             }
 
         }
-        /*if(squad.canGo(squad.overlapedCase))
-        {
-            if(squad.overlapedCase.squad != null)
-            {
-                if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
-                {
-                    var toFriendlyFires = squad.getFriendlyFire(squad.overlapedCase.squad);
-                    toFriendlyFires.forEach(function(toFriendlyFire) {
-                        toFriendlyFire.case.FirendlyFireOverlaped();
-                    });
-                    squad.overlapedCase.AttackOverLaped();
-                }
-                else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
-                {
-                    squad.overlapedCase.SupportOverLaped();
-                }
-            }
-            else
-            {
-                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
-                {  
-                    squad.overlapedCase.OverLaped();
-                }
-            }
-        }*/
     }
 }
 
@@ -197,7 +174,7 @@ function stopDragSquadGaming(sprite, pointer)
             // if the squad is alreay on another case, remove it from the case.
             if(move(sprite))
             {
-                refreshAction(sprite.ref);
+                //refreshAction(sprite.ref);
             }
         }
         else
@@ -233,22 +210,24 @@ function tempAttack(squad, target)
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
 
-    var defendingAgainst = getDefendingAgainst(target);
-    if(defendingAgainst.length == 0)
-    {
-        target.action = addBattle(target, squad);
-        drawAttack(target.action);
-    }
-
+    //var defendingAgainst = getDefendingAgainst(target);
+    //if(defendingAgainst.length == 0)
+    //{
+        //target.action = addBattle(target, squad);
+        //drawAttack(target.action);
+    //}
+/*
     var existingAttack = findBattle(squad);
 
     if(existingAttack)
     {
         removeBattle(existingAttack);
     }
-
+*/
     squad.action = addBattle(squad, target);
-    drawAttack(squad.action);
+    target.action = addBattle(target, squad);
+    doFights();
+    //drawAttack(squad.action);
 }
 
 function getDefendingAgainst(defendingSquad)
@@ -293,9 +272,21 @@ function findBattle(attackingSquad)
     return this.game.battles[index];
 }
 
+function findUnprocessedBattle(attackingSquad)
+{
+    var index = this.game.battles.findIndex(function(elem){
+        return elem.isProcessed == false && elem.attackingSquad == attackingSquad;
+    });
+    if(typeof index == "undefined" || index == null || index == -1)
+    {
+        return false;
+    }
+    return this.game.battles[index];
+}
+
 function isDefendingAgainst(defendingSquad, attackingSquad)
 {
-    defendingBattle = findBattle(defendingSquad);
+    defendingBattle = findUnprocessedBattle(defendingSquad);
     if(defendingBattle && defendingBattle.target == attackingSquad)
     {
         return defendingBattle;
@@ -307,7 +298,7 @@ function doFights()
 {
     var actualTurn = this.game.turn.number;
     this.game.battles.forEach(function(battle){
-        battle.process(this.game.turn.number);
+        battle.process(actualTurn);
     });
 }
 

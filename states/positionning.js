@@ -75,6 +75,7 @@ function positioningPlayer(player)
     });
 */
     player.fleat.deploySquad(player.fleat.capitalShip);
+    enableDragSquad(player.fleat.capitalShip, dragSquad, stopDragSquad);
     //drawSquad(player.fleat.capitalShip);
     //drawPlayerSquads(player);
     //enableDrag(player, dragSquad, stopDragSquad);
