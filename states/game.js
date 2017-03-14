@@ -6,16 +6,17 @@ TheGame.prototype = {
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.turn.number = 0;
         this.game.battles = [];
-        drawCases(this.game);
-        drawAllSquads(this.game);
-        nextTurn(this.game);
+        drawCases();
+        drawAllSquads();
+        nextTurn();
         button = this.game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
       },
     update : function(){
         this.game.caseTable.forEach(function(oneCase){
             oneCase.NotOverLaped();
         });
-        checkOverLap(this.game.turn.player,this.game.caseTable, OverLapGamingDraggingManagment);
+        checkOverLapSquad(this.game.turn.player,this.game.caseTable, OverLapGamingDraggingManagment);
+        checkOverLapCard(this.game.turn.player,this.game.caseTable, OverLapGamingCardDraggingManagment);
     }
 }
 
@@ -35,18 +36,123 @@ function nextTurn()
     if(this.game.turn.player != null)
     {
         this.game.turn.player.resetEffects();
+        this.game.turn.player.destroyCardView();
     }
-    nextPlayer(this.game);
+    nextPlayer();
     this.game.turn.player.resetSquadsActions();
     this.game.turn.player.drawOneCard();
-    enableDrag(game.turn.player, dragSquad, stopDragSquadGaming);
+    this.game.turn.player.showCards();
+    enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
 }
 
 ///////////////////////////////////////////////////////////
 ///////////////////// DRAG AND OVERLAP ////////////////////
 ///////////////////////////////////////////////////////////
 
-function OverLapGamingDraggingManagment(squad, oldOverLapped)
+function dragCard(sprite, pointer)
+{
+    sprite.body.moves = false;
+    sprite.ref.isDragged = true;
+}
+
+function stopDragCard(sprite, pointer)
+{
+    var card = sprite.ref;
+    sprite.body.moves = false;
+    card.isDragged = false;
+    if(card.overlapedCase !== null )
+    {
+        if(card.type == "squad")
+        {
+            if(card.overlapedCase.squad == null)
+            {
+                card.overlapedCase.squad = card.object;
+                card.object.case = card.overlapedCase;
+                card.object.fleat.deploySquad(card.object);
+                card.destroy();
+            }
+        }
+        else if(card.type == "order")
+        {
+            if(card.overlapedCase.squad != null)
+            {
+                if(card.overlapedCase.squad.fleat.player == card.handler.player)
+                {
+                    card.overlapedCase.squad.buff(card.object);
+                    card.destroy();
+                }
+                else if(card.overlapedCase.squad.fleat.player != card.handler.player)
+                {
+                    card.overlapedCase.squad.buff(card.object);
+                    card.destroy();
+                }
+            }
+        }
+    }
+    else
+    {
+        // set the squad to the original position.
+        sprite.x = card.handler.x;
+        sprite.y = card.handler.y;
+    }
+    //stopDragPlayer(sprite);
+}
+
+function OverLapGamingCardDraggingManagment(card)
+{
+    if(card.overlapedCase !== null)
+    {
+        if(card.type == "squad")
+        {
+            if(card.overlapedCase.squad == null)
+            {
+                card.overlapedCase.OverLaped();
+            }
+        }
+        else if(card.type == "order")
+        {
+            if(card.overlapedCase.squad != null)
+            {
+                if(card.overlapedCase.squad.fleat.player == card.handler.player)
+                {
+                    card.overlapedCase.SupportOverLaped();
+                }
+                if(card.overlapedCase.squad.fleat.player != card.handler.player)
+                {
+                    card.overlapedCase.AttackOverLaped();
+                }
+            }
+
+        }
+        /*if(squad.canGo(squad.overlapedCase))
+        {
+            if(squad.overlapedCase.squad != null)
+            {
+                if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
+                {
+                    var toFriendlyFires = squad.getFriendlyFire(squad.overlapedCase.squad);
+                    toFriendlyFires.forEach(function(toFriendlyFire) {
+                        toFriendlyFire.case.FirendlyFireOverlaped();
+                    });
+                    squad.overlapedCase.AttackOverLaped();
+                }
+                else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
+                {
+                    squad.overlapedCase.SupportOverLaped();
+                }
+            }
+            else
+            {
+                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
+                {  
+                    squad.overlapedCase.OverLaped();
+                }
+            }
+        }*/
+    }
+}
+
+function OverLapGamingDraggingManagment(squad)
 {
     if(squad.overlapedCase !== null)
     {
@@ -201,7 +307,7 @@ function doFights()
 {
     var actualTurn = this.game.turn.number;
     this.game.battles.forEach(function(battle){
-        battle.process(this.game);
+        battle.process(this.game.turn.number);
     });
 }
 
@@ -257,7 +363,6 @@ function move(sprite)
 
 function refreshAction(squad)
 {
-    var toSlice = [];
     var defendingAgainst = getDefendingAgainst(squad);
     defendingAgainst.forEach(function(battle, index){
         battle.arrowPhaserObject.destroy();
@@ -272,7 +377,7 @@ function refreshAction(squad)
         }
     });
 
-    if(squad.action != null)
+    if(squad.action != null && squad.action.type == "attack")
     {
         squad.action.arrowPhaserObject.destroy();
         if(squad.canGo(squad.action.target.case))

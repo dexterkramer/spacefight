@@ -16,9 +16,8 @@ oneFleat.prototype = {
     addCapitalShip : function(squadJson)
     {
         this.capitalShip = createSquad(this, squadJson);
-        this.addSquad(this.capitalShip);
     },
-    deploySquad : function(game, squad)
+    deploySquad : function(squad)
     {
         var x;
         var y;
@@ -32,7 +31,6 @@ oneFleat.prototype = {
             x = squad.originalX;
             y = squad.originalY;
         }
-
         drawSquad(squad, x, y);
         enableDragSquad(squad, dragSquad, stopDragSquad);
         this.deployedSquad.push(squad);

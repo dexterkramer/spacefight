@@ -30,42 +30,21 @@ oneSquad.prototype = {
         this.phaserObject.x = this.overlapedCase.phaserObject.middleX;
         this.phaserObject.y = this.overlapedCase.phaserObject.middleY;
     },
-    getOverlapedCase : function(caseTable, game)
+    buff : function(order)
     {
-        let overLapValue = 0;
-        let overLapCase = null;
         var ref = this;
-        caseTable.forEach(function(oneCase){
-            if (oneCase.phaserObject.points.contains(game.input.x, game.input.y))
+        order.effects.forEach(function(effect){
+            if(effect.type == "damage")
             {
-                overLapCase = oneCase;
+                ref.attackModifiersArray.push(createDamageModifier(effect.value, -1));
             }
         });
-        return overLapCase;
     },
-    drawLifeBar : function(game)
+    drawLifeBar : function()
     {
-        if(this.lifeBar.phaserObject !== null)
-        {
-            this.lifeBar.phaserObject.destroy();
-        }
-        if(this.lifeBar.textObject !== null)
-        {
-            this.lifeBar.textObject.destroy();
-        }
-        var lifeBar = game.add.graphics(lifeBarX, lifeBarY);
-        var percent = this.lifeBar.armor / this.lifeBar.maxArmor; 
-        lifeBar.lineStyle(lifeBarHeight, getLifeBarColor(percent));
-        lifeBar.lineTo(lifebarWidth * percent, 0);
-        this.phaserObject.addChild(lifeBar);
-        this.lifeBar.phaserObject = lifeBar;
-        lifeBar.anchor.set(0, 0);
-        var style = { font: "9px Arial",/* fill: "#ff0044", wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
-        text = game.add.text(lifeBarX, lifeBar.y - (lifeBarHeight / 2) - 3, this.lifeBar.armor + "/" + this.lifeBar.maxArmor , style);
-        text.anchor.set(0 , 0);
-        text.x = lifeBarX + ((lifebarWidth * percent) / 2) - (text.width / 2);
-        this.lifeBar.textObject = text;
-        this.phaserObject.addChild(text);
+        var lifeBarPhaserObject = this.lifeBar.draw();
+        this.phaserObject.addChild(lifeBarPhaserObject);
+        this.phaserObject.addChild(lifeBarPhaserObject.textObject);
     },
     addShip : function(ship)
     {
@@ -206,7 +185,7 @@ oneSquad.prototype = {
         }
         return toFriendlyFire;
     },
-    applyFriendlyFire : function(toFriendlyFire, game)
+    applyFriendlyFire : function(toFriendlyFire)
     {
         var ref = this;
         toFriendlyFire.forEach(function(squad){
@@ -215,7 +194,7 @@ oneSquad.prototype = {
             ref.attack(squad, modifiers);
             squad.applyDamages();
             squad.updateLifeBar();
-            squad.drawLifeBar(game);
+            squad.drawLifeBar();
         });
     },
     defend : function(defendingSquad, modifiers)
@@ -358,7 +337,7 @@ oneSquad.prototype = {
         var toRemove = [];
         this.attackModifiersArray.forEach(function(modifier, index){
             modifier.turns -= 1;
-            if(modifier.turns <= 0)
+            if(modifier.turns == 0)
             {
                 toRemove.push(index);
             }

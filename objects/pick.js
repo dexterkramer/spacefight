@@ -17,10 +17,14 @@ onePick.prototype = {
     },
     drawOne : function()
     {
-        let selectIndex = Math.floor(Math.random()*this.pile.length);
-        var selectedCard = this.pile[selectIndex];
-        this.pile.slice(selectIndex,1);
-        return selectedCard;
+        if(this.pile.length > 0)
+        {
+            let selectIndex = Math.floor(Math.random()*this.pile.length);
+            var selectedCard = this.pile[selectIndex];
+            this.pile.splice(selectIndex,1);
+            return selectedCard;
+        }
+        return false;
     }
 };
 

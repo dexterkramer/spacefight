@@ -44,20 +44,45 @@ onePlayer.prototype = {
     drawOneCard : function()
     {
         var card = this.pick.drawOne();
+        if(!card)
+        {
+            return false;
+        }
         var index = this.cardHandlers.findIndex(function(elem){
             return elem.card == null;
         });
-        var choosenHandler = this.cardHandlers[index];
-        card.setHandler(choosenHandler);
-        choosenHandler.addCard(card);
-        card.drawCard();
-/*
-        let selectedOrderIndex = Math.floor(Math.random()*this.orders.length);
-        this.availableOrders.push(this.orders[selectedOrderIndex]);
-        this.orders.splice(selectedOrderIndex, 1);*/
+        if(typeof index != "undefined" && index != null && index != -1)
+        {
+            var choosenHandler = this.cardHandlers[index];
+            card.setHandler(choosenHandler);
+            choosenHandler.addCard(card);
+        }
+    },
+    showCards : function()
+    {
+        this.cardHandlers.forEach(function(handler, index){
+            if(handler.card != null)
+            {
+                handler.card.drawCard();
+            }
+        });
     },
     createHandler : function()
     {
         this.cardHandlers = createHandlers(this);
+    },
+    destroyCardView : function()
+    {
+        let tempObject = null;
+        this.cardHandlers.forEach(function(handler){
+            if(handler.card != null)
+            {
+                if(handler.card.phaserObject != null)
+                {
+                    handler.card.phaserObject.destroy();
+                    handler.card.phaserObject = null;
+                }
+            }
+        });
     }
 };
