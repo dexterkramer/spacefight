@@ -19,5 +19,20 @@ lifeBar.prototype = {
     setShield : function(shield)
     {
         this.shield = shield;
+    },
+    draw : function()
+    {
+        if(this.phaserObject !== null)
+        {
+            this.phaserObject.destroy();
+        }
+        if(this.textObject !== null)
+        {
+            this.textObject.destroy();
+        }
+        var lifeBarPhaser = drawLifeBar(this);
+        this.phaserObject = lifeBarPhaser;
+        this.textObject = lifeBarPhaser.textObject;
+        return lifeBarPhaser;
     }
 };

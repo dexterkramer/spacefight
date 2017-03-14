@@ -4,7 +4,9 @@ var positionning = function(game){
 positionning.prototype = {
   	create: function(){
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
-        drawCases(this.game);
+        squadsGroup = this.game.add.group();
+        cardsGroup = this.game.add.group();
+        drawCases();
         nextPlayer(false);
         positioningTurnInit(this.game.turn.player);
         button = game.add.button(600, 600, 'button', actionOnClick, this, 1, 0, 1);
@@ -13,11 +15,11 @@ positionning.prototype = {
         this.game.caseTable.forEach(function(oneCase){
             oneCase.NotOverLaped();
         });
-        checkOverLap(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
+        checkOverLapSquad(this.game.turn.player,this.game.turn.player.availableCasePositioning, OverLapPositioningDraggingManagment);
     }
 }
 
-function OverLapPositioningDraggingManagment(squad, oldOverLapped)
+function OverLapPositioningDraggingManagment(squad)
 {
     if(squad.overlapedCase !== null && squad.overlapedCase.squad !== null && squad.overlapedCase.squad !== squad)
     {
@@ -61,12 +63,19 @@ function positioningPlayer(player)
     squadsGroup = this.game.add.group();
     var XposSquad = 0;
     var YposSquad = 600;
+
+    player.fleat.capitalShip.originalX = XposSquad;
+    player.fleat.capitalShip.originalY = YposSquad;
+
+/*
     player.fleat.squads.forEach(function(squad){
         squad.originalX = XposSquad;
         squad.originalY = YposSquad;
         XposSquad = XposSquad + 100;
     });
-
-    drawPlayerSquads(player);
-    enableDrag(player, dragSquad, stopDragSquad);
+*/
+    player.fleat.deploySquad(player.fleat.capitalShip);
+    //drawSquad(player.fleat.capitalShip);
+    //drawPlayerSquads(player);
+    //enableDrag(player, dragSquad, stopDragSquad);
 }

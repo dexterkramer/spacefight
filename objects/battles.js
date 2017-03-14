@@ -7,12 +7,9 @@ var battle = function(attackingSquad, target)
 }
 
 battle.prototype = {
-    process : function(game)
+    process : function(turnNumber)
     {
-
-        var actualTurn = game.turn.number;
-                
-        if(this.isProcessed == actualTurn)
+        if(this.isProcessed == turnNumber)
             return;
         this.attackingSquad.initFinalArmor();
         this.target.initFinalArmor();
@@ -27,17 +24,17 @@ battle.prototype = {
         if(defnedingAgainstBattle)
         {
             defnedingAgainstBattle.attackingSquad.attack(this.attackingSquad, []);
-            defnedingAgainstBattle.isProcessed = actualTurn;
+            defnedingAgainstBattle.isProcessed = turnNumber;
         }
         var toFriendlyFires = this.attackingSquad.getFriendlyFire(this.target);
-        this.attackingSquad.applyFriendlyFire(toFriendlyFires, game);
+        this.attackingSquad.applyFriendlyFire(toFriendlyFires);
         this.target.applyDamages();
         this.attackingSquad.applyDamages();
         this.attackingSquad.updateLifeBar();
         this.target.updateLifeBar();
-        this.target.drawLifeBar(game);
-        this.attackingSquad.drawLifeBar(game);
-        this.isProcessed = actualTurn;
+        this.target.drawLifeBar();
+        this.attackingSquad.drawLifeBar();
+        this.isProcessed = turnNumber;
     }
 };
 
