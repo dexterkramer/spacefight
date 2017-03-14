@@ -209,24 +209,35 @@ function tempAttack(squad, target)
         squad.phaserObject.x = squad.case.phaserObject.middleX;
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
-
-    //var defendingAgainst = getDefendingAgainst(target);
-    //if(defendingAgainst.length == 0)
-    //{
-        //target.action = addBattle(target, squad);
-        //drawAttack(target.action);
-    //}
-/*
-    var existingAttack = findBattle(squad);
-
-    if(existingAttack)
-    {
-        removeBattle(existingAttack);
-    }
-*/
     squad.action = addBattle(squad, target);
     target.action = addBattle(target, squad);
-    doFights();
+
+    squad.initFinalArmor();
+    target.initFinalArmor();
+    var modifiers = [];
+    var flankBonus = squad.calcultateFlankingBonus(target);
+    if(flankBonus)
+    {
+        modifiers.push(flankBonus);
+    }
+    squad.attack(target, modifiers);
+    target.attack(squad,  []);
+    var toFriendlyFires = squad.getFriendlyFire(target);
+    squad.applyFriendlyFire(toFriendlyFires);
+    target.applyDamages();
+    squad.applyDamages();
+    squad.updateLifeBar();
+    target.updateLifeBar();
+    target.drawLifeBar();
+    squad.drawLifeBar();
+    if(target.lifeBar.armor <= 0)
+    {
+        target.removeFromBattle();
+    }
+    if(squad.lifeBar.armor <= 0)
+    {
+        squad.removeFromBattle();
+    }
     //drawAttack(squad.action);
 }
 

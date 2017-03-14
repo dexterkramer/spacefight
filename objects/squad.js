@@ -201,6 +201,10 @@ oneSquad.prototype = {
             squad.applyDamages();
             squad.updateLifeBar();
             squad.drawLifeBar();
+            if(squad.lifeBar.armor <= 0)
+            {
+                squad.removeFromBattle();
+            }
         });
     },
     defend : function(defendingSquad, modifiers)
