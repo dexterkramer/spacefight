@@ -61,8 +61,8 @@ function actionOnClick()
 function positioningPlayer(player)
 {
     squadsGroup = this.game.add.group();
-    var XposSquad = 0;
-    var YposSquad = 600;
+    var XposSquad = 100;
+    var YposSquad = 700;
 
     player.fleat.capitalShip.originalX = XposSquad;
     player.fleat.capitalShip.originalY = YposSquad;
@@ -75,6 +75,7 @@ function positioningPlayer(player)
     });
 */
     player.fleat.deploySquad(player.fleat.capitalShip);
+    enableDragSquad(player.fleat.capitalShip, dragSquad, stopDragSquad);
     //drawSquad(player.fleat.capitalShip);
     //drawPlayerSquads(player);
     //enableDrag(player, dragSquad, stopDragSquad);

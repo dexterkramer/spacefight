@@ -6,12 +6,16 @@ TheGame.prototype = {
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.turn.number = 0;
         this.game.battles = [];
+        this.game.looser = [];
+        this.game.eliminatedPlayers = [];
+        this.game.winner = null;
         drawCases();
         drawAllSquads();
         nextTurn();
         button = this.game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
       },
     update : function(){
+        checkLoosers();
         this.game.caseTable.forEach(function(oneCase){
             oneCase.NotOverLaped();
         });
@@ -24,10 +28,48 @@ TheGame.prototype = {
 ////////////////////////// GAME MECHANICS ////////////////////////
 //////////////////////////////////////////////////////////////////
 
+function checkLoosers()
+{
+    if(this.game.looser.length > 0)
+    {
+        var ref = this;
+        var i;
+        var initLenght = this.game.players.length;
+        for(i = 0; i < initLenght; i++)
+        {
+            var looserIndex = this.game.players.findIndex(function(elem){
+                return ref.game.looser.indexOf(elem) != -1;
+            });
+            if(looserIndex != -1)
+            {
+                this.game.eliminatedPlayers.push(this.game.players[looserIndex]);
+                this.game.players.splice(looserIndex, 1);
+            }
+        }
+        if(this.game.players.length <= 1)
+        {
+            finishGame();
+        }
+    }
+}
+
+function finishGame()
+{
+    console.log("finish !!!");
+    if(this.game.players.length == 1)
+    {
+        console.log(this.game.players[0].name + " win ! ");
+    }
+    this.game.eliminatedPlayers.forEach(function(player){
+        console.log(player.name + " looose, booohoohoo !!!!");
+    });
+}
+
 function nextTurn()
 {
     //applyActions();
-    doFights();
+    //doFights();
+    this.game.battles = [];
     if(this.game.turn.player !== null)
     {
         disableDragingFroPlayer(this.game.turn.player);
@@ -69,6 +111,7 @@ function stopDragCard(sprite, pointer)
                 card.overlapedCase.squad = card.object;
                 card.object.case = card.overlapedCase;
                 card.object.fleat.deploySquad(card.object);
+                enableDragSquad(card.object, dragSquad, stopDragSquadGaming);
                 card.destroy();
             }
         }
@@ -124,31 +167,6 @@ function OverLapGamingCardDraggingManagment(card)
             }
 
         }
-        /*if(squad.canGo(squad.overlapedCase))
-        {
-            if(squad.overlapedCase.squad != null)
-            {
-                if(squad.overlapedCase.squad.fleat.player != squad.fleat.player )
-                {
-                    var toFriendlyFires = squad.getFriendlyFire(squad.overlapedCase.squad);
-                    toFriendlyFires.forEach(function(toFriendlyFire) {
-                        toFriendlyFire.case.FirendlyFireOverlaped();
-                    });
-                    squad.overlapedCase.AttackOverLaped();
-                }
-                else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
-                {
-                    squad.overlapedCase.SupportOverLaped();
-                }
-            }
-            else
-            {
-                if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
-                {  
-                    squad.overlapedCase.OverLaped();
-                }
-            }
-        }*/
     }
 }
 
@@ -197,7 +215,7 @@ function stopDragSquadGaming(sprite, pointer)
             // if the squad is alreay on another case, remove it from the case.
             if(move(sprite))
             {
-                refreshAction(sprite.ref);
+                //refreshAction(sprite.ref);
             }
         }
         else
@@ -208,7 +226,15 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                tempAttack(sprite.ref, sprite.ref.overlapedCase.squad);
+                if(sprite.ref.action == null)
+                {
+                    attack(sprite.ref, sprite.ref.overlapedCase.squad);
+                    disableDragSquad(sprite.ref);
+                }
+                else
+                {
+                    returnPreviousCase(sprite.ref);
+                }
             }
         }
     }
@@ -220,11 +246,7 @@ function stopDragSquadGaming(sprite, pointer)
     }
 }
 
-//////////////////////////////////////////////////////////////////////////
-/////////////////////////// ATTACK ///////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-function tempAttack(squad, target)
+function returnPreviousCase(squad)
 {
     // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
@@ -232,23 +254,55 @@ function tempAttack(squad, target)
         squad.phaserObject.x = squad.case.phaserObject.middleX;
         squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
+}
 
-    var defendingAgainst = getDefendingAgainst(target);
-    if(defendingAgainst.length == 0)
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////// ATTACK ///////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+function attack(squad, target)
+{
+    // don't move the squad to the case (attack the ennemy squad instead)
+    if(squad.case !== null)
     {
-        target.action = addBattle(target, squad);
-        drawAttack(target.action);
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
     }
-
-    var existingAttack = findBattle(squad);
-
-    if(existingAttack)
-    {
-        removeBattle(existingAttack);
-    }
-
     squad.action = addBattle(squad, target);
-    drawAttack(squad.action);
+    target.action = addBattle(target, squad);
+
+    squad.initFinalArmor();
+    target.initFinalArmor();
+    var modifiers = [];
+    var flankBonus = squad.calcultateFlankingBonus(target);
+    if(flankBonus)
+    {
+        modifiers.push(flankBonus);
+    }
+    squad.attack(target, modifiers);
+    target.attack(squad,  []);
+    var toFriendlyFires = squad.getFriendlyFire(target);
+    squad.applyFriendlyFire(toFriendlyFires);
+    target.applyDamages();
+    squad.applyDamages();
+    squad.updateLifeBar();
+    target.updateLifeBar();
+    target.drawLifeBar();
+    squad.drawLifeBar();
+    if(target.lifeBar.armor <= 0)
+    {
+        target.removeFromBattle();
+    }
+    if(squad.lifeBar.armor <= 0)
+    {
+        squad.removeFromBattle();
+    }
+    //drawAttack(squad.action);
+}
+
+function loose(player)
+{
+    this.game.looser.push(player);
 }
 
 function getDefendingAgainst(defendingSquad)
@@ -293,9 +347,21 @@ function findBattle(attackingSquad)
     return this.game.battles[index];
 }
 
+function findUnprocessedBattle(attackingSquad)
+{
+    var index = this.game.battles.findIndex(function(elem){
+        return elem.isProcessed == false && elem.attackingSquad == attackingSquad;
+    });
+    if(typeof index == "undefined" || index == null || index == -1)
+    {
+        return false;
+    }
+    return this.game.battles[index];
+}
+
 function isDefendingAgainst(defendingSquad, attackingSquad)
 {
-    defendingBattle = findBattle(defendingSquad);
+    defendingBattle = findUnprocessedBattle(defendingSquad);
     if(defendingBattle && defendingBattle.target == attackingSquad)
     {
         return defendingBattle;
@@ -307,7 +373,7 @@ function doFights()
 {
     var actualTurn = this.game.turn.number;
     this.game.battles.forEach(function(battle){
-        battle.process(this.game.turn.number);
+        battle.process(actualTurn);
     });
 }
 

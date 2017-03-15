@@ -2,15 +2,15 @@ var battle = function(attackingSquad, target)
 {
     this.attackingSquad = attackingSquad;
     this.target = target;
-    this.isProcessed = 0;
+    this.isProcessed = false;
     this.arrowPhaserObject = null;
 }
 
 battle.prototype = {
-    process : function(turnNumber)
+    process : function()
     {
-        if(this.isProcessed == turnNumber)
-            return;
+        if(this.isProcessed)
+            return false;
         this.attackingSquad.initFinalArmor();
         this.target.initFinalArmor();
         var modifiers = [];
@@ -24,7 +24,7 @@ battle.prototype = {
         if(defnedingAgainstBattle)
         {
             defnedingAgainstBattle.attackingSquad.attack(this.attackingSquad, []);
-            defnedingAgainstBattle.isProcessed = turnNumber;
+            defnedingAgainstBattle.isProcessed = true;
         }
         var toFriendlyFires = this.attackingSquad.getFriendlyFire(this.target);
         this.attackingSquad.applyFriendlyFire(toFriendlyFires);
@@ -34,7 +34,15 @@ battle.prototype = {
         this.target.updateLifeBar();
         this.target.drawLifeBar();
         this.attackingSquad.drawLifeBar();
-        this.isProcessed = turnNumber;
+        if(this.target.lifeBar.armor <= 0)
+        {
+            this.target.removeFromBattle();
+        }
+        if(this.attackingSquad.lifeBar.armor <= 0)
+        {
+            this.attackingSquad.removeFromBattle();
+        }
+        this.isProcessed = true;
     }
 };
 

@@ -73,6 +73,16 @@ oneSquad.prototype = {
         this.lifeBar.setArmor(totalArmor);
         this.lifeBar.setShield(totalShield);
     },
+    removeFromBattle : function()
+    {
+        this.fleat.undeploySquad(this);
+        this.case.squad = null;
+        this.case = null;
+        if(this == this.fleat.capitalShip)
+        {
+            loose(this.fleat.player);
+        }
+    },
     canDefend : function()
     {
         if(this.action != null && this.action.type == "defend")
@@ -195,6 +205,10 @@ oneSquad.prototype = {
             squad.applyDamages();
             squad.updateLifeBar();
             squad.drawLifeBar();
+            if(squad.lifeBar.armor <= 0)
+            {
+                squad.removeFromBattle();
+            }
         });
     },
     defend : function(defendingSquad, modifiers)

@@ -21,10 +21,10 @@ onePlayer.prototype = {
     resetSquadsActions : function()
     {
         this.movesAllowed = 1;
-        this.fleat.squads.forEach(function(squad){
+        this.fleat.deployedSquad.forEach(function(squad){
             squad.movesAllowed = 1;
             squad.tempAction = null;
-            //squad.action = null;
+            squad.action = null;
             squad.movedFrom = [];
             //squad.defendAgainst = [];
         });

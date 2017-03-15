@@ -26,7 +26,6 @@ oneCard.prototype = {
                 drawCardSquad(this, this.handler.x, this.handler.y);
                 enableDragCard(this, dragCard, stopDragCard);
             }
-            
         }
     },
     destroy : function()

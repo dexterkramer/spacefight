@@ -17,6 +17,14 @@ oneFleat.prototype = {
     {
         this.capitalShip = createSquad(this, squadJson);
     },
+    undeploySquad : function(squad)
+    {
+        this.deployedSquad.splice(this.deployedSquad.findIndex(function(elem){
+            return elem == squad;
+        }),1);
+        disableDragSquad(squad);
+        removeSquad(squad);
+    },
     deploySquad : function(squad)
     {
         var x;
@@ -32,7 +40,6 @@ oneFleat.prototype = {
             y = squad.originalY;
         }
         drawSquad(squad, x, y);
-        enableDragSquad(squad, dragSquad, stopDragSquad);
         this.deployedSquad.push(squad);
     }
 };
