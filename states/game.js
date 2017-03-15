@@ -33,13 +33,18 @@ function checkLoosers()
     if(this.game.looser.length > 0)
     {
         var ref = this;
-        var looserIndex = this.game.players.findIndex(function(elem){
-            return ref.game.looser.indexOf(elem) != -1;
-        });
-        if(looserIndex != -1)
+        var i;
+        var initLenght = this.game.players.length;
+        for(i = 0; i < initLenght; i++)
         {
-            this.game.eliminatedPlayers.push(this.game.players[looserIndex]);
-            this.game.players.splice(looserIndex, 1);
+            var looserIndex = this.game.players.findIndex(function(elem){
+                return ref.game.looser.indexOf(elem) != -1;
+            });
+            if(looserIndex != -1)
+            {
+                this.game.eliminatedPlayers.push(this.game.players[looserIndex]);
+                this.game.players.splice(looserIndex, 1);
+            }
         }
         if(this.game.players.length <= 1)
         {
@@ -54,10 +59,10 @@ function finishGame()
     if(this.game.players.length == 1)
     {
         console.log(this.game.players[0].name + " win ! ");
-        this.game.eliminatedPlayers.forEach(function(player){
-            console.log(player.name + " looose, booohoohoo !!!!");
-        });
     }
+    this.game.eliminatedPlayers.forEach(function(player){
+        console.log(player.name + " looose, booohoohoo !!!!");
+    });
 }
 
 function nextTurn()

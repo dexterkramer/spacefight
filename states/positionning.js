@@ -61,8 +61,8 @@ function actionOnClick()
 function positioningPlayer(player)
 {
     squadsGroup = this.game.add.group();
-    var XposSquad = 0;
-    var YposSquad = 600;
+    var XposSquad = 100;
+    var YposSquad = 700;
 
     player.fleat.capitalShip.originalX = XposSquad;
     player.fleat.capitalShip.originalY = YposSquad;
