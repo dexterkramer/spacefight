@@ -6,12 +6,16 @@ TheGame.prototype = {
         this.game.add.tileSprite(0, 0, game.width, game.height, 'space');
         this.game.turn.number = 0;
         this.game.battles = [];
+        this.game.looser = [];
+        this.game.eliminatedPlayers = [];
+        this.game.winner = null;
         drawCases();
         drawAllSquads();
         nextTurn();
         button = this.game.add.button(600, 600, 'button', nextTurn, this, 1, 0, 1);
       },
     update : function(){
+        checkLoosers();
         this.game.caseTable.forEach(function(oneCase){
             oneCase.NotOverLaped();
         });
@@ -23,6 +27,38 @@ TheGame.prototype = {
 //////////////////////////////////////////////////////////////////
 ////////////////////////// GAME MECHANICS ////////////////////////
 //////////////////////////////////////////////////////////////////
+
+function checkLoosers()
+{
+    if(this.game.looser.length > 0)
+    {
+        var ref = this;
+        var looserIndex = this.game.players.findIndex(function(elem){
+            return ref.game.looser.indexOf(elem) != -1;
+        });
+        if(looserIndex != -1)
+        {
+            this.game.eliminatedPlayers.push(this.game.players[looserIndex]);
+            this.game.players.splice(looserIndex, 1);
+        }
+        if(this.game.players.length <= 1)
+        {
+            finishGame();
+        }
+    }
+}
+
+function finishGame()
+{
+    console.log("finish !!!");
+    if(this.game.players.length == 1)
+    {
+        console.log(this.game.players[0].name + " win ! ");
+        this.game.eliminatedPlayers.forEach(function(player){
+            console.log(player.name + " looose, booohoohoo !!!!");
+        });
+    }
+}
 
 function nextTurn()
 {
@@ -185,7 +221,15 @@ function stopDragSquadGaming(sprite, pointer)
             }
             if(sprite.ref.overlapedCase.squad.fleat.player != sprite.ref.fleat.player)
             {
-                tempAttack(sprite.ref, sprite.ref.overlapedCase.squad);
+                if(sprite.ref.action == null)
+                {
+                    attack(sprite.ref, sprite.ref.overlapedCase.squad);
+                    disableDragSquad(sprite.ref);
+                }
+                else
+                {
+                    returnPreviousCase(sprite.ref);
+                }
             }
         }
     }
@@ -197,11 +241,21 @@ function stopDragSquadGaming(sprite, pointer)
     }
 }
 
+function returnPreviousCase(squad)
+{
+    // don't move the squad to the case (attack the ennemy squad instead)
+    if(squad.case !== null)
+    {
+        squad.phaserObject.x = squad.case.phaserObject.middleX;
+        squad.phaserObject.y = squad.case.phaserObject.middleY;
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 /////////////////////////// ATTACK ///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
-function tempAttack(squad, target)
+function attack(squad, target)
 {
     // don't move the squad to the case (attack the ennemy squad instead)
     if(squad.case !== null)
@@ -239,6 +293,11 @@ function tempAttack(squad, target)
         squad.removeFromBattle();
     }
     //drawAttack(squad.action);
+}
+
+function loose(player)
+{
+    this.game.looser.push(player);
 }
 
 function getDefendingAgainst(defendingSquad)

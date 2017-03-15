@@ -78,6 +78,10 @@ oneSquad.prototype = {
         this.fleat.undeploySquad(this);
         this.case.squad = null;
         this.case = null;
+        if(this == this.fleat.capitalShip)
+        {
+            loose(this.fleat.player);
+        }
     },
     canDefend : function()
     {
