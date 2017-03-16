@@ -73,6 +73,17 @@ oneSquad.prototype = {
         this.lifeBar.setArmor(totalArmor);
         this.lifeBar.setShield(totalShield);
     },
+    calculFirePower : function()
+    {
+        var totalFirePower = 0;
+        this.ships.forEach(function(ship){
+            if(ship.lifeBar.armor > 0)
+            {
+                totalFirePower += ship.infos.firePower;
+            }
+        });
+        return totalFirePower;
+    },
     removeFromBattle : function()
     {
         this.fleat.undeploySquad(this);

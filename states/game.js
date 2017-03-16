@@ -8,7 +8,8 @@ TheGame.prototype = {
         this.game.battles = [];
         this.game.looser = [];
         this.game.eliminatedPlayers = [];
-        this.game.winner = null;
+        this.game.infos = { tourInfos : null};
+        this.game.battleInfos = null;
         drawCases();
         drawAllSquads();
         nextTurn();
@@ -20,7 +21,7 @@ TheGame.prototype = {
             oneCase.NotOverLaped();
         });
         checkOverLapSquad(this.game.turn.player,this.game.caseTable, OverLapGamingDraggingManagment);
-        checkOverLapCard(this.game.turn.player,this.game.caseTable, OverLapGamingCardDraggingManagment);
+        checkOverLapCard(this.game.turn.player,this.game.caseTable, this.game.turn.player.availableCaseDeploying, OverLapGamingCardDraggingManagment);
     }
 }
 
@@ -55,20 +56,66 @@ function checkLoosers()
 
 function finishGame()
 {
-    console.log("finish !!!");
+    refreshInfos();
+    //console.log("finish !!!");
     if(this.game.players.length == 1)
     {
-        console.log(this.game.players[0].name + " win ! ");
+        //console.log(this.game.players[0].name + " win ! ");
     }
     this.game.eliminatedPlayers.forEach(function(player){
-        console.log(player.name + " looose, booohoohoo !!!!");
+        //console.log(player.name + " looose, booohoohoo !!!!");
     });
+}
+
+function refreshInfos()
+{
+    if(this.game.infos.tourInfos != null && this.game.infos.tourInfos.phaserObject != null)
+    {
+        this.game.infos.tourInfos.phaserObject.destroy();
+    }
+    if(this.game.players.length <= 1)
+    {
+        if(this.game.players.length == 1)
+        {
+            var infosTourX = 700;
+            var infosTourY = 100;
+            var textTour = this.game.turn.player.name+ " win the game !";
+            var style = { font: "20px Arial", fill: "#ff0044"/*, wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
+            var text = this.game.add.text(infosTourX, infosTourY, textTour , style);
+            text.anchor.set(0 , 0);
+            this.game.infos.tourInfos = {};
+            this.game.infos.tourInfos.phaserObject = text;
+        }
+        else
+        {
+            var infosTourX = 700;
+            var infosTourY = 100;
+            var textTour = "DRAW !";
+            var style = { font: "20px Arial", fill: "#ff0044"/*, wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
+            var text = this.game.add.text(infosTourX, infosTourY, textTour , style);
+            text.anchor.set(0 , 0);
+            this.game.infos.tourInfos = {};
+            this.game.infos.tourInfos.phaserObject = text;
+        }
+    }
+    else
+    {
+        if(this.game.turn.player != null)
+        {
+            var infosTourX = 700;
+            var infosTourY = 100;
+            var textTour = " Turn : " + this.game.turn.player.name;
+            var style = { font: "20px Arial", fill: "#ff0044"/*, wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
+            var text = this.game.add.text(infosTourX, infosTourY, textTour , style);
+            text.anchor.set(0 , 0);
+            this.game.infos.tourInfos = {};
+            this.game.infos.tourInfos.phaserObject = text;
+        }
+    }
 }
 
 function nextTurn()
 {
-    //applyActions();
-    //doFights();
     this.game.battles = [];
     if(this.game.turn.player !== null)
     {
@@ -81,10 +128,16 @@ function nextTurn()
         this.game.turn.player.destroyCardView();
     }
     nextPlayer();
+    refreshInfos();
     this.game.turn.player.resetSquadsActions();
     this.game.turn.player.drawOneCard();
     this.game.turn.player.showCards();
     enableDrag(this.game.turn.player, dragSquad, stopDragSquadGaming);
+}
+
+function loose(player)
+{
+    this.game.looser.push(player);
 }
 
 ///////////////////////////////////////////////////////////
@@ -170,8 +223,97 @@ function OverLapGamingCardDraggingManagment(card)
     }
 }
 
+function removeBattleInfos()
+{
+    if(this.game.battleInfos != null)
+    {
+        if(this.game.battleInfos.squadTextPhaserObject != null)
+        {
+            this.game.battleInfos.squadTextPhaserObject.destroy();
+            this.game.battleInfos.squadTextPhaserObject = null;
+        }
+        if(this.game.battleInfos.ennemyTextPhaserObject != null)
+        {
+            this.game.battleInfos.ennemyTextPhaserObject.destroy();
+            this.game.battleInfos.ennemyTextPhaserObject = null;
+        }
+        /*if(this.game.battleInfos.flankBonusTextPhaserObject != null)
+        {
+            this.game.battleInfos.flankBonusTextPhaserObject.destroy();
+            this.game.battleInfos.flankBonusTextPhaserObject = null;
+        }*/
+    }
+    this.game.battleInfos = null;
+}
+
+function createBattleInfos(squad, target, toFriendlyFire)
+{
+    if(this.game.battleInfos != null && this.game.battleInfos.squad == squad && this.game.battleInfos.target == target)
+    {
+        return false;
+    }
+    var infos = {};
+    infos.target = target;
+    infos.squad = squad;
+    infos.firePower = squad.calculFirePower();
+    infos.armor = squad.lifeBar.armor;
+    infos.ennemyFirePower = target.calculFirePower();
+    infos.ennemyArmor = target.lifeBar.armor;
+    infos.toFriendlyFire = toFriendlyFire;
+    var flankBonus = squad.calcultateFlankingBonus(target);
+    infos.flankBonus = [];
+    if(flankBonus)
+    {
+        infos.flankBonus.push(flankBonus);
+    }
+
+    return infos;
+}
+
+function refreshBattleInfos()
+{
+    var infosBattleX = 700;
+    var infosBattleY = 350;
+    var textSquadName = this.game.battleInfos.squad.name;
+    var textFirePower = "\nFire Power : " + this.game.battleInfos.firePower; 
+    var textArmor = "\nArmor : " + this.game.battleInfos.armor;
+    var textEnnemyName = this.game.battleInfos.target.name;
+    var textEnnemyFirePower = "\nFire Power : " + this.game.battleInfos.ennemyFirePower; 
+    var textEnnemyArmor = "\nArmor : " + this.game.battleInfos.ennemyArmor;
+    var textFriendlyFire = "";
+    if(this.game.battleInfos.toFriendlyFire.length > 0)
+    {   
+        textFriendlyFire = "\n FriendlyFire : ";
+        this.game.battleInfos.toFriendlyFire.forEach(function(toFriendly){
+            textFriendlyFire += "\n" + toFriendly.name;
+        });
+    }
+
+    var textFlankBonus = "";
+    var yPosToAdd = 0;
+    this.game.battleInfos.flankBonus.forEach(function(bonus){
+        yPosToAdd += 10;
+        textFlankBonus += "\n flank bonus : " + bonus.damageModifier;
+    });
+
+    var style = { font: "20px Arial", fill: "#20D113"/*, wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
+    var text = this.game.add.text(infosBattleX, infosBattleY, textSquadName + textFirePower + textArmor + textFlankBonus, style);
+    text.anchor.set(0 , 0);
+    this.game.battleInfos.squadTextPhaserObject = text;
+
+    var infosBattleX = 700;
+    var infosBattleY = 450 + yPosToAdd;
+
+    var styleEnnemy = { font: "20px Arial", fill: "#ff0044"/*, wordWrap: false, wordWrapWidth: lifeBar.width, /*align: "center", backgroundColor: "#ffff00"*/ };
+    var textEnnemy = this.game.add.text(infosBattleX, infosBattleY, textEnnemyName + textEnnemyFirePower + textEnnemyArmor + textFriendlyFire, styleEnnemy);
+    textEnnemy.anchor.set(0 , 0);
+    this.game.battleInfos.ennemyTextPhaserObject = textEnnemy;
+
+}
+
 function OverLapGamingDraggingManagment(squad)
 {
+    var battleInfos = false;
     if(squad.overlapedCase !== null)
     {
         if(squad.canGo(squad.overlapedCase))
@@ -185,9 +327,17 @@ function OverLapGamingDraggingManagment(squad)
                         toFriendlyFire.case.FirendlyFireOverlaped();
                     });
                     squad.overlapedCase.AttackOverLaped();
+                    battleInfos = createBattleInfos(squad, squad.overlapedCase.squad, toFriendlyFires);
+                    if(battleInfos)
+                    {
+                        removeBattleInfos();
+                        this.game.battleInfos = battleInfos;
+                        refreshBattleInfos();
+                    }
                 }
                 else if(squad.overlapedCase.squad.fleat.player == squad.fleat.player )
                 {
+                    removeBattleInfos();
                     squad.overlapedCase.SupportOverLaped();
                 }
             }
@@ -195,15 +345,26 @@ function OverLapGamingDraggingManagment(squad)
             {
                 if(squad.movedFrom[squad.movedFrom.length - 1] == squad.overlapedCase || squad.movesAllowed > 0)
                 {  
+                    removeBattleInfos();
                     squad.overlapedCase.OverLaped();
                 }
             }
         }
+        else
+        {
+            removeBattleInfos();
+        }
     }
+    else
+    {
+        removeBattleInfos();
+    }
+
 }
 
 function stopDragSquadGaming(sprite, pointer)
 {
+    removeBattleInfos();
     sprite.body.moves = false;
     sprite.ref.isDragged = false;
     // has the squad been dragged on a case ?
@@ -274,6 +435,12 @@ function attack(squad, target)
     squad.initFinalArmor();
     target.initFinalArmor();
     var modifiers = [];
+    var toFriendlyFires = squad.getFriendlyFire(target);
+    squad.applyFriendlyFire(toFriendlyFires);
+    if(toFriendlyFires.length > 0)
+    {
+        modifiers.push(createDamageModifier(1-(toFriendlyFires.length/10),1));
+    }
     var flankBonus = squad.calcultateFlankingBonus(target);
     if(flankBonus)
     {
@@ -281,8 +448,6 @@ function attack(squad, target)
     }
     squad.attack(target, modifiers);
     target.attack(squad,  []);
-    var toFriendlyFires = squad.getFriendlyFire(target);
-    squad.applyFriendlyFire(toFriendlyFires);
     target.applyDamages();
     squad.applyDamages();
     squad.updateLifeBar();
@@ -298,11 +463,6 @@ function attack(squad, target)
         squad.removeFromBattle();
     }
     //drawAttack(squad.action);
-}
-
-function loose(player)
-{
-    this.game.looser.push(player);
 }
 
 function getDefendingAgainst(defendingSquad)
